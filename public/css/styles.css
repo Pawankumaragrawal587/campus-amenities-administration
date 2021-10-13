@@ -1,3 +1,24 @@
-.title {
+body {
+    background-color: #D4ECDD;
+}
+
+.center {
     text-align: center;
+}
+
+.footer {
+    border-top-style: solid;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+.home-img {
+    height: 250px;
+    width: 380px;
+    margin: 20px;
+}
+
+#img-block {
+    margin-top: 100px;
 }
