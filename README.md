@@ -12,7 +12,7 @@ Design Docs:
     
     Guest House - https://docs.google.com/document/d/1hiqIbmCoSsiKRlfP7LnHGyiVEHZA6J1KQHuiVn3kKCU/edit?usp=sharing
     
-    Market Shop - 
+    Market Shop - https://docs.google.com/document/d/1YfvAR81smZXXIx8-sSGhOL6FKWUts4Cx6WPsUkgTkxY/edit?usp=sharing
     
     Landscape - 
     
