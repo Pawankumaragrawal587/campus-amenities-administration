@@ -2,7 +2,10 @@ require('dotenv').config()
 const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
-const mysql = require('mysql2');
+const mysqlConnection = require('./mysqlQueries/mysqlConnection.js');
+const mysqlQueriesGuest = require('./mysqlQueries/guest.js');
+const mysqlQueriesLandscape = require('./mysqlQueries/landscape.js');
+const mysqlQueriesMarket = require('./mysqlQueries/market.js');
 
 const app = express();
 
@@ -20,32 +23,16 @@ app.use(bodyParser.urlencoded({
 //            MySql Database Configuration
 //=================================================
 
-const mysqlConnection = mysql.createConnection({
-    host: process.env.HOST,
-    user: process.env.USER,
-    password: process.env.PASSWORD,
-    database: process.env.DATABASE
-});
-
 mysqlConnection.connect(function(err){
     if(err) {
         console.log(err);
     } else {
         console.log("Database Connected Successfully");
-        showTestEntries();
+        mysqlQueriesGuest.configDB();
+        mysqlQueriesLandscape.configDB();
+        mysqlQueriesMarket.configDB();
     }
 });
-
-function showTestEntries() {
-    const mysqlQuery = "SELECT * FROM test";
-    mysqlConnection.query(mysqlQuery, function(err, result){
-        if(err) {
-            console.log(err);
-        } else {
-            console.log(result);
-        }
-    });
-}
 
 // ================================================
 //                      ROUTES
