@@ -3,6 +3,19 @@ const mysqlConnection = require('../mysqlQueries/mysqlConnection.js');
 var queryObj = {};
 
 //================================================
+//              Select Queries
+//================================================
+
+queryObj.roomAvailabilityQuery = function(params) {
+    const mysqlQuery = 
+        `
+            SELECT * FROM room
+            WHERE occupancy="${params.occupancy}" and HasBathroom="${params.hasBathroom}";
+        `
+    return mysqlQuery;
+}
+
+//================================================
 //             Create Table Queries
 //================================================
 
@@ -82,87 +95,70 @@ const createBookingRequest_BookingTableQuery =
     `
 
 //================================================
+//            Create Procedure Queries
+//================================================
+
+const createProcedureinsertRoomQuery = 
+    `
+        CREATE PROCEDURE insertRoom()
+        BEGIN
+            declare num int default 0;
+            SELECT COUNT(*) INTO num FROM room;
+            IF num=0 THEN
+                insertionLoop: LOOP
+                    IF num>= 40 THEN 
+                        LEAVE insertionLoop;
+                    END IF;
+                    IF num<10 THEN 
+                        INSERT INTO room VALUES (CONCAT("RMA-", num+1), "Single", "No", 800);
+                    ELSEIF num<20 THEN 
+                        INSERT INTO room VALUES (CONCAT("RMB-", num+1), "Double", "No", 1300);
+                    ELSEIF num<30 THEN 
+                        INSERT INTO room VALUES (CONCAT("RMC-", num+1), "Single", "Yes", 1000);
+                    ELSE
+                        INSERT INTO room VALUES (CONCAT("RMD-", num+1), "Double", "Yes", 1500);
+                    END IF;
+                    SET num = num + 1;
+                END LOOP;
+            END IF;
+        END;
+    `
+
+//================================================
 //              Database Configuration
 //================================================
 
-function createRoomTable() {
-    mysqlConnection.query(createRoomTableQuery, function(err,results){
-        if(err) {
-            console.log(err);
-        } else {
-            console.log(results);
-        }
-    });
-}
+const queries = [
+    createRoomTableQuery,
+    createBookingRequestTableQuery,
+    createBookingTableQuery,
+    createGuestTableQuery,
+    createRoom_BookingTableQuery,
+    createGuest_BookingTableQuery,
+    createBookingRequest_BookingTableQuery,
+    'DROP PROCEDURE IF EXISTS insertRoom;',
+    createProcedureinsertRoomQuery,
+    'CALL insertRoom();'
+]
 
-function createBookingRequestTable() {
-    mysqlConnection.query(createBookingRequestTableQuery, function(err,results){
-        if(err) {
-            console.log(err);
-        } else {
-            console.log(results);
-        }
-    });
-}
-
-function createBookingTable() {
-    mysqlConnection.query(createBookingTableQuery, function(err,results){
-        if(err) {
-            console.log(err);
-        } else {
-            console.log(results);
-        }
-    });
-}
-
-function createGuestTable() {
-    mysqlConnection.query(createGuestTableQuery, function(err,results){
-        if(err) {
-            console.log(err);
-        } else {
-            console.log(results);
-        }
-    });
-}
-
-function createRoom_BookingTable() {
-    mysqlConnection.query(createRoom_BookingTableQuery, function(err,results){
-        if(err) {
-            console.log(err);
-        } else {
-            console.log(results);
-        }
-    });
-}
-
-function createGuest_BookingTable() {
-    mysqlConnection.query(createGuest_BookingTableQuery, function(err,results){
-        if(err) {
-            console.log(err);
-        } else {
-            console.log(results);
-        }
-    });
-}
-
-function createBookingRequest_BookingTable() {
-    mysqlConnection.query(createBookingRequest_BookingTableQuery, function(err,results){
-        if(err) {
-            console.log(err);
-        } else {
-            console.log(results);
-        }
-    });
+function executeQueries(queryNum) {
+    if (queryNum === queries.length) {
+        return;
+    } else {
+        console.log(queryNum);
+        mysqlConnection.query(queries[queryNum], function(err,results){
+            if(err) {
+                console.log(err);
+            } else {
+                console.log(results);
+                executeQueries(queryNum+1);
+            }
+        });
+    }
 }
 
 queryObj.configDB = function() {
-    createRoomTable();
-    createBookingRequestTable();
-    createBookingTable();
-    createGuestTable();
-    createRoom_BookingTable();
-    createGuest_BookingTable();
-    createBookingRequest_BookingTable();
+    executeQueries(0);
 }
 
 module.exports = queryObj;

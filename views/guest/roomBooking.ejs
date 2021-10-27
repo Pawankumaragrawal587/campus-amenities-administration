@@ -1,0 +1,41 @@
+<%- include ('../partials/header') %>
+
+<h1 class="center">Guest Room Booking</h1>
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="container">
+            <form action="/guest/roomBooking" method="POST">
+                <div class="form-group">
+                    <label for="exampleFormControlSelect1">Occupancy</label>
+                    <select class="form-control" id="exampleFormControlSelect1" name="occupancy">
+                        <option value="">--Please choose an option--</option>
+                        <option value="single">Single</option>
+                        <option value="double">Double</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="exampleFormControlSelect2">Separate Bathroom</label>
+                    <select class="form-control" id="exampleFormControlSelect2" name="hasBathroom">
+                        <option value="">--Please choose an option--</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+    <div class="col-md-9">
+        <div class="container">
+            <h2 class="center">Available Rooms</h2>
+        </div>
+        <% rooms.forEach(function(room){ %>
+            <div>
+                <p>Per Day Cost : <%= room.Cost %> Rupees</p>
+            </div>
+        <% }); %> 
+    </div>
+</div>
+
+<%- include ('../partials/footer') %>
