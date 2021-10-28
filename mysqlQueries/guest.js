@@ -15,9 +15,29 @@ queryObj.roomAvailabilityQuery = function(params) {
     return mysqlQuery;
 }
 
+queryObj.selectUser = function(webmail) {
+    const mysqlQuery = 
+        `
+            SELECT * FROM user 
+            WHERE user.webmail="${webmail}";
+        `
+    return mysqlQuery;
+}
+
 //================================================
 //             Create Table Queries
 //================================================
+
+const createUserTableQuery = 
+    `
+        CREATE TABLE IF NOT EXISTS user(
+            CollegeID varchar(20) PRIMARY KEY,
+            UserType varchar(10) NOT NULL CHECK (UserType IN ("Admin", "Staff", "Student")),
+            Name varchar(30) NOT NULL,
+            Webmail varchar(30) NOT NULL,
+            Password varchar(100) NOT NULL
+        );
+    `
 
 const createRoomTableQuery = 
     `
@@ -129,6 +149,7 @@ const createProcedureinsertRoomQuery =
 //================================================
 
 const queries = [
+    createUserTableQuery,
     createRoomTableQuery,
     createBookingRequestTableQuery,
     createBookingTableQuery,

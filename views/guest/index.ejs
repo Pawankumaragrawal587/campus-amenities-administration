@@ -2,10 +2,16 @@
 
 <h1 class="center">This is guest page!</h1>
 
+<div>
+    <% if(user) { %>
+        <span>Hello <%= user.Name %>!</span>
+    <% } %>
+</div>
+
 <div class="container">
-    <p>
-        <a href="/guest/roomBooking">Guest Room Booking</a>
-    </p>
+    <p><a href="/guest/roomBooking">Guest Room Booking</a></p>
+    <p><a href="/login">Login</a></p>
+    <p><a href="/logout">Logout</a></p>
 </div>
 
 <%- include ('../partials/footer') %>
