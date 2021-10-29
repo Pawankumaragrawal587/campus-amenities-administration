@@ -1,0 +1,39 @@
+<%- include ('../partials/header') %>
+
+<h1 class="center">Guest Room Availability</h1>
+
+<div class="container">
+    <form class="row g-3 justify-content-center" action="/guest/roomAvailability" method="POST">
+        <div class="col-auto">
+            <label for="exampleFormControlInput1">Stay From</label>
+        </div>
+        <div class="col-auto">
+            <input type="date" class="form-control" id="exampleFormControlInput1" value="<% if(stayFrom){ %><%=stayFrom%><% } %>" min="<%=new Date().toISOString().slice(0, 10)%>" name="stayFrom">
+        </div>
+        <div class="col-auto">
+            <label for="exampleFormControlInput2">Stay Till</label>
+        </div>
+        <div class="col-auto">
+            <input type="date" class="form-control" id="exampleFormControlInput2" value="<% if(stayTill){ %><%=stayTill%><% } %>" min="<%=new Date().toISOString().slice(0, 10)%>" name="stayTill">
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary mb-3">Check Availibility</button>
+        </div>
+    </form>
+    <h2 class="center">Available Rooms</h2>
+    <div>
+        <% rooms.forEach(function(room){ %>
+            <div>
+                <p>
+                    <span>Occupancy: <%= room.Occupancy %></span>,
+                    <span>Attached Bathroom: <%= room.HasBathroom %></span>,
+                    <span>Per Day Cost: <%= room.Cost %> Rupees</span>,
+                    <span>Number of Available Rooms: <%= room.num %></span>
+                    <a href="/guest/roomBooking?occupancy=<%=room.Occupancy%>&hasBathroom=<%=room.HasBathroom%>&stayFrom=<%=stayFrom%>&stayTill=<%=stayTill%>" class="btn btn-primary" role="button">Book</a>
+                </p>
+            </div>
+        <% }); %>
+    </div>
+</div>
+
+<%- include ('../partials/footer') %>

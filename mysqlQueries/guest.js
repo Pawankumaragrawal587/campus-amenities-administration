@@ -6,20 +6,26 @@ var queryObj = {};
 //              Select Queries
 //================================================
 
-queryObj.roomAvailabilityQuery = function(params) {
+queryObj.selectUser = function(webmail) {
     const mysqlQuery = 
         `
-            SELECT * FROM room
-            WHERE occupancy="${params.occupancy}" and HasBathroom="${params.hasBathroom}";
+            SELECT * FROM User 
+            WHERE User.webmail="${webmail}";
         `
     return mysqlQuery;
 }
 
-queryObj.selectUser = function(webmail) {
+queryObj.roomAvailabilityQuery = function(params) {
     const mysqlQuery = 
         `
-            SELECT * FROM user 
-            WHERE user.webmail="${webmail}";
+            SELECT * FROM Room
+            where Occupancy="${params.occupancy}" and HasBathroom="${params.hasBathroom}"
+            and RoomNumber NOT IN (
+                SELECT RoomNumber FROM Room_Booking
+                INNER JOIN Booking ON Room_Booking.BookingID=Booking.BookingID
+                WHERE Booking.Status!="Rejected"
+                and (Booking.BookedFrom <= "${params.stayTill}" and Booking.BookedTill >= "${params.stayFrom}")
+            );
         `
     return mysqlQuery;
 }
