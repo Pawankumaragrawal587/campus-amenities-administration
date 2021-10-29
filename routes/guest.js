@@ -2,12 +2,13 @@ const express = require('express');
 const router = express.Router();
 const mysqlConnection = require('../mysqlQueries/mysqlConnection.js');
 const mysqlQueriesGuest = require('../mysqlQueries/guest.js');
+const middlewareObj = require('../middleware/index.js');
 
-router.get('/guest',function(req, res){
+router.get('/guest', function(req, res){
     res.render("guest/index");
 });
 
-router.get('/guest/roomBooking',function(req, res){
+router.get('/guest/roomBooking', middlewareObj.isLoggedIn, function(req, res){
     rooms = [];
     req.query.occupancy = 'Single';
     req.query.hasBathroom = 'No';

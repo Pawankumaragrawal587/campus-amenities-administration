@@ -9,6 +9,7 @@ const mysqlQueriesMarket = require('./mysqlQueries/market.js');
 const session = require('express-session');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
+const middlewareObj = require('./middleware/index.js');
 
 //=================================================
 //              Express Configuration
@@ -70,13 +71,6 @@ app.use(function(req,res,next){
     return next();
 });
 
-app.use(session({
-    cookie : {
-        secure: true,
-        sameSite: 'None'
-      }
-}));
-
 //=================================================
 //            MySql Database Configuration
 //=================================================
@@ -108,11 +102,12 @@ app.get("/",function(req,res){
     res.render("home");
 });
 
-app.get('/login', function(req, res){
+app.get('/login', middlewareObj.isLoggedOut, function(req, res){
     res.render('login');
 });
 
 app.post('/login',
+    middlewareObj.isLoggedOut,
     passport.authenticate('local',{
         successRedirect: '/',
         failureRedirect: '/login'
