@@ -10,6 +10,7 @@ const session = require('express-session');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const middlewareObj = require('./middleware/index.js');
+const flash = require('connect-flash');
 
 //=================================================
 //              Express Configuration
@@ -22,6 +23,7 @@ app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({
     extended:true
 }));
+app.use(flash());
 
 //=================================================
 //       Passport and Session Configuration
@@ -68,6 +70,8 @@ passport.deserializeUser(function(webmail, done) {
 // user can be used on every ejs template
 app.use(function(req,res,next){
     res.locals.user = req.user;
+    res.locals.success = req.flash('success');
+    res.locals.error = req.flash('error');
     return next();
 });
 
@@ -114,7 +118,8 @@ app.post('/login',
     middlewareObj.isLoggedOut,
     passport.authenticate('local',{
         successRedirect: '/',
-        failureRedirect: '/login'
+        failureRedirect: '/login',
+        failureFlash: true
     })
 );
 

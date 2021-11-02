@@ -112,6 +112,7 @@ router.post('/guest/roomBooking', middlewareObj.isLoggedIn, function(req,res){
                                             console.log(err);
                                             res.redirect('/guest/roomAvailability');
                                         } else {
+                                            req.flash('success', 'Booking Request Submitted Successfully. You Will receive a confirmation email upon approval.');
                                             res.redirect('/guest');
                                         }
                                     });

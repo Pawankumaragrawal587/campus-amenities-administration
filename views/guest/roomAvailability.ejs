@@ -20,7 +20,13 @@
             <button type="submit" class="btn btn-primary mb-3">Check Availibility</button>
         </div>
     </form>
-    <h2 class="center">Available Rooms</h2>
+    <%if(!stayFrom) {%>
+        <h2 class="center">Select Duration of Stay and Check Availability</h2>
+    <%} else if(rooms.length===0) {%>
+        <h2 class="center">No Rooms Available for selected duration</h2>
+    <%} else {%>
+        <h2 class="center">Available Rooms</h2>
+    <%}%>
     <div>
         <% rooms.forEach(function(room){ %>
             <div>

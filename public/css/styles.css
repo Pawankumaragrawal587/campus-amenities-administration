@@ -29,6 +29,10 @@
     padding: 10px;
 }
 
+.mtp {
+    margin-top: 10px;
+}
+
 .stick {
     position: relative;
     top: 8px;
