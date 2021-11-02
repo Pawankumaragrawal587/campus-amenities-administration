@@ -1,17 +1,8 @@
 <%- include ('../partials/header') %>
 
-<h1 class="center">This is guest page!</h1>
-
-<div>
-    <% if(user) { %>
-        <span>Hello <%= user.Name %>!</span>
-    <% } %>
-</div>
-
 <div class="container">
+    <h1 class="center">This is guest page!</h1>
     <p><a href="/guest/roomAvailability">Guest Room Availability</a></p>
-    <p><a href="/login">Login</a></p>
-    <p><a href="/logout">Logout</a></p>
 </div>
 
 <%- include ('../partials/footer') %>

@@ -29,6 +29,12 @@
     padding: 10px;
 }
 
+.stick {
+    position: relative;
+    top: 8px;
+    color: darkolivegreen;
+}
+
 
 #img-block {
     margin-top: 100px;

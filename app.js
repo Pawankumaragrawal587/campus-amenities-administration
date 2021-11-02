@@ -102,6 +102,10 @@ app.get("/",function(req,res){
     res.render("home");
 });
 
+app.get('/user/:CollegeID', middlewareObj.isLoggedIn, function(req,res){
+    res.render('user');
+});
+
 app.get('/login', middlewareObj.isLoggedOut, function(req, res){
     res.render('login');
 });
