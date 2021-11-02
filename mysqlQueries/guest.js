@@ -31,6 +31,28 @@ queryObj.roomAvailabilityQuery = function(params) {
 }
 
 //================================================
+//              Insert Queries
+//================================================
+
+queryObj.insertBooking = function(params) {
+    const mysqlQuery = 
+        `
+            INSERT INTO Booking
+            VALUES (${params.bookingID}, "${params.status}", "${params.bookingTime}", "${params.stayFrom}", "${params.stayTill}", "${params.purposeOfStay}", "${params.paymentMethod}");
+        `
+    return mysqlQuery;
+}
+
+queryObj.insertGuest = function(params) {
+    const mysqlQuery = 
+        `
+            INSERT IGNORE INTO Guest
+            VALUES ("${params.aadharNumber}", "${params.name}", ${params.age}, "${params.email}", "${params.mobile}");
+        `
+    return mysqlQuery;
+}
+
+//================================================
 //             Create Table Queries
 //================================================
 
@@ -58,7 +80,7 @@ const createRoomTableQuery =
 const createBookingTableQuery = 
     `
         CREATE TABLE IF NOT EXISTS Booking(
-            BookingID varchar(10) PRIMARY KEY,
+            BookingID int PRIMARY KEY,
             Status varchar(10) NOT NULL CHECK (Status IN ("Approved", "Rejected", "Pending")),
             BookingTime datetime NOT NULL,
             BookedFrom date NOT NULL,
@@ -83,7 +105,7 @@ const createUser_BookingTableQuery =
     `
         CREATE TABLE IF NOT EXISTS User_Booking(
             CollegeID varchar(20),
-            BookingID varchar(10),
+            BookingID int,
             CONSTRAINT User_Booking_fk1 FOREIGN KEY (CollegeID) references User(CollegeID),
             CONSTRAINT User_Booking_fk2 FOREIGN KEY (BookingID) references Booking(BookingID),
             PRIMARY KEY (CollegeID, BookingID)
@@ -94,7 +116,7 @@ const createRoom_BookingTableQuery =
     `
         CREATE TABLE IF NOT EXISTS Room_Booking(
             RoomNumber varchar(10),
-            BookingID varchar(10),
+            BookingID int,
             CONSTRAINT Room_Booking_fk1 FOREIGN KEY (RoomNumber) references Room(RoomNumber),
             CONSTRAINT Room_Booking_fk2 FOREIGN KEY (BookingID) references Booking(BookingID),
             PRIMARY KEY (RoomNumber, BookingID)
@@ -105,10 +127,18 @@ const createGuest_BookingTableQuery =
     `
         CREATE TABLE IF NOT EXISTS Guest_Booking(
             AadharNumber char(12),
-            BookingID varchar(10),
+            BookingID int,
             CONSTRAINT Guest_Booking_fk1 FOREIGN KEY (AadharNumber) references Guest(AadharNumber),
             CONSTRAINT Guest_Booking_fk2 FOREIGN KEY (BookingID) references Booking(BookingID),
             PRIMARY KEY (AadharNumber, BookingID)
+        );
+    `
+
+const createIDGeneratorTableQuery = 
+    `
+        CREATE TABLE IF NOT EXISTS IDGenerator(
+            TableName varchar(20) Primary Key,
+            ID int
         );
     `
 
@@ -191,6 +221,43 @@ const createProcedureInsertUserQuery =
         END;
     `
 
+const createInsertBookingRelationsProcedure = 
+    `
+        CREATE PROCEDURE InsertBookingRelations(
+            IN CollegeID varchar(20),
+            IN RoomNumber varchar(10),
+            IN AadharNumber char(12),
+            IN BookingID int
+        )
+        BEGIN
+            INSERT INTO User_Booking VALUES (CollegeID, BookingID);
+            INSERT INTO Room_Booking VALUES (RoomNumber, BookingID);
+            INSERT INTO Guest_Booking VALUES (AadharNumber, BookingID);
+        END
+    `
+
+//================================================
+//              Functions
+//================================================
+
+const createGetIDFunction = 
+    `
+        CREATE FUNCTION GetID(TableName varchar(20))
+        RETURNS int 
+        DETERMINISTIC
+        BEGIN
+            DECLARE result int DEFAULT 0;
+            IF EXISTS (SELECT * FROM IDGenerator WHERE IDGenerator.TableName=TableName) THEN 
+                UPDATE IDGenerator SET ID=ID+1 WHERE IDGenerator.TableName=TableName;
+                SELECT ID INTO result FROM IDGenerator WHERE IDGenerator.TableName=TableName;
+            ELSE
+                INSERT INTO IDGenerator VALUES (TableName, 1);
+                SET result=1;
+            END IF;
+            RETURN result;
+        END
+    `
+
 //================================================
 //              Database Configuration
 //================================================
@@ -203,12 +270,17 @@ const queries = [
     createUser_BookingTableQuery,
     createRoom_BookingTableQuery,
     createGuest_BookingTableQuery,
+    createIDGeneratorTableQuery,
     'DROP PROCEDURE IF EXISTS InsertRoom;',
     createProcedureInsertRoomQuery,
     'CALL InsertRoom();',
     'DROP PROCEDURE IF EXISTS InsertUser;',
     createProcedureInsertUserQuery,
-    'CALL InsertUser();'
+    'CALL InsertUser();',
+    'DROP PROCEDURE IF EXISTS InsertBookingRelations',
+    createInsertBookingRelationsProcedure,
+    'DROP FUNCTION IF EXISTS GetID',
+    createGetIDFunction
 ]
 
 function executeQueries(queryNum) {

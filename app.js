@@ -81,8 +81,8 @@ mysqlConnection.connect(function(err){
     } else {
         console.log("Database Connected Successfully");
         mysqlQueriesGuest.configDB();
-        mysqlQueriesLandscape.configDB();
-        mysqlQueriesMarket.configDB();
+        // mysqlQueriesLandscape.configDB();
+        // mysqlQueriesMarket.configDB();
     }
 });
 

@@ -78,4 +78,51 @@ router.get('/guest/roomBooking', middlewareObj.isLoggedIn, function(req,res){
     res.render('guest/roomBooking',{bookingData:req.query});
 });
 
+router.post('/guest/roomBooking', middlewareObj.isLoggedIn, function(req,res){
+    mysqlConnection.query('SELECT GetID("Booking") as BookingID', function(err, result){
+        if(err) {
+            console.log(err);
+            res.redirect('/guest/roomAvailability');
+        } else {
+            req.body.bookingID = result[0].BookingID;
+            req.body.status = 'Pending';
+            req.body.bookingTime = new Date().toISOString().slice(0, 19).replace('T', ' ');
+            mysqlConnection.query(mysqlQueriesGuest.insertBooking(req.body), function(err,result){
+                if(err) {
+                    console.log(err);
+                    res.redirect('/guest/roomAvailability');
+                } else {
+                    mysqlConnection.query(mysqlQueriesGuest.insertGuest(req.body), function(err, result){
+                        if(err) {
+                            console.log(err);
+                            res.redirect('/guest/roomAvailability');
+                        } else {
+                            mysqlConnection.query(mysqlQueriesGuest.roomAvailabilityQuery(req.body), function(err, result){
+                                if(err || result.length === 0) {
+                                    console.log(err);
+                                    res.redirect('/guest/roomAvailability');
+                                } else {
+                                    req.body.roomNumber = result[0].RoomNumber;
+                                    const mysqlQuery = 
+                                        `
+                                            CALL InsertBookingRelations("${req.user.CollegeID}", "${req.body.roomNumber}", "${req.body.aadharNumber}", ${req.body.bookingID});
+                                        `
+                                    mysqlConnection.query(mysqlQuery, function(err,results){
+                                        if(err) {
+                                            console.log(err);
+                                            res.redirect('/guest/roomAvailability');
+                                        } else {
+                                            res.redirect('/guest');
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        }
+    });
+});
+
 module.exports = router;
