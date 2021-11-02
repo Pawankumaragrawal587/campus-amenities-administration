@@ -23,8 +23,8 @@ const createShopkeeperTableQuery =
         CREATE TABLE IF NOT EXISTS Shopkeeper(
             ShopKeeperID varchar(20) PRIMARY KEY,
             ShopKeeperName varchar(20) NOT NULL,
-            GatePass_registered date NOT_NULL,
-            GatePass_expiry data NOT_NULL
+            GatePass_registered date NOT NULL,
+            GatePass_expiry data NOT NULL
         );
     `
 
@@ -53,8 +53,8 @@ const createTender_DetailsTableQuery =
         CREATE TABLE IF NOT EXISTS Tender_Details(
             ShopID varchar(20),
             ShopKeeperID varchar(20),
-            License_registered date NOT_NULL,
-            License_expiry date NOT_NULL,
+            License_registered date NOT NULL,
+            License_expiry date NOT NULL,
             CONSTRAINT Tender_Details_fk1 FOREIGN KEY (ShopID) references Shop(ShopID),
             CONSTRAINT Tender_Details_fk2 FOREIGN KEY (ShopKeeperID) references Shopkeeper(ShopKeeperID),
             PRIMARY KEY (ShopID, ShopKeeperID)
