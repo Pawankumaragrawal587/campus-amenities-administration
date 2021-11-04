@@ -14,6 +14,6 @@ Design Docs:
     
     Market Shop - https://docs.google.com/document/d/1YfvAR81smZXXIx8-sSGhOL6FKWUts4Cx6WPsUkgTkxY/edit?usp=sharing
     
-    Landscape - 
+    Landscape -   https://docs.google.com/document/d/15UJo4ugetwweWJo-PKq2ozCN82SFM7VDxqRnWJBwOEs/edit?usp=sharing
     
    
