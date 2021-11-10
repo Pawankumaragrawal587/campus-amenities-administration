@@ -1,0 +1,48 @@
+<%- include ('../partials/header') %>
+
+<div class="container">
+    <%roomBookingRequests.forEach(function(request){%>
+        <div class="card">
+            <div class="card-header">BookingID: <%=request.BookingID%></div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        CollegeID: <%=request.CollegeID%>
+                    </div>
+                    <div class="col-md-4">
+                        BookingTime: <%=request.BookingTime.toString().slice(0, 33)%>
+                    </div>
+                    <div class="col-md-4">
+                        PaymentMethod: <%=request.PaymentMethod%>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        RoomNumber: <%=request.RoomNumber%>
+                    </div>
+                    <div class="col-md-4">
+                        BookedFrom: <%=request.BookedFrom.toString().slice(0, 33)%>
+                    </div>
+                    <div class="col-md-4">
+                        BookedTill: <%=request.BookedTill.toString().slice(0, 33)%>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        GuestName: <%=request.Name%>
+                    </div>
+                    <div class="col-md-4">
+                        AadharNumber: <%=request.AadharNumber%>
+                    </div>
+                    <div class="col-md-4">
+                        Age: <%=request.Age%>
+                    </div>
+                </div>
+                <a class="btn btn-success btn-sm" href="/guest/booking/room/Approved/<%=request.BookingID%>">Approve</a>
+                <a class="btn btn-danger btn-sm" href="/guest/booking/room/Rejected/<%=request.BookingID%>">Reject</a>
+            </div>
+        </div>
+    <%});%>
+</div>
+
+<%- include ('../partials/footer') %>

@@ -30,6 +30,29 @@ queryObj.roomAvailabilityQuery = function(params) {
     return mysqlQuery;
 }
 
+queryObj.pendingBookings = function(params) {
+    const mysqlQuery = 
+        `
+            SELECT * FROM Booking
+            NATURAL JOIN User_Booking
+            NATURAL JOIN Room_Booking
+            NATURAL JOIN Guest_Booking
+            NATURAL JOIN Guest
+            WHERE Status="Pending";
+        `
+    return mysqlQuery;
+}
+
+queryObj.updateRoomBookingStatus = function(params) {
+    const mysqlQuery = 
+        `
+            UPDATE Booking
+            SET Status="${params.status}"
+            WHERE BookingID=${params.bookingId};
+        `
+    return mysqlQuery;
+}
+
 //================================================
 //              Insert Queries
 //================================================

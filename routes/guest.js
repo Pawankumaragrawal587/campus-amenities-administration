@@ -126,4 +126,19 @@ router.post('/guest/roomBooking', middlewareObj.isLoggedIn, function(req,res){
     });
 });
 
+router.get('/guest/bookings/room', middlewareObj.isAdmin, function(req,res){
+    mysqlConnection.query(mysqlQueriesGuest.pendingBookings(req.query), function(err,results){
+        res.render('guest/roomBookingRequests', {roomBookingRequests:results});
+    });
+});
+
+router.get('/guest/booking/room/:status/:bookingId', middlewareObj.isAdmin, function(req,res){
+    mysqlConnection.query(mysqlQueriesGuest.updateRoomBookingStatus(req.params), function(err,results){
+        if(err) {
+            req.flash('error', 'Something Went Wrong!');
+        }
+        res.redirect('/guest/bookings/room');
+    });
+});
+
 module.exports = router;
