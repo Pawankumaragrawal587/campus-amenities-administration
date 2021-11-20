@@ -3,8 +3,12 @@
 <div class="container">
     <h1 class="center">This is guest page!</h1>
     <p><a href="/guest/roomAvailability">Guest Room Availability</a></p>
-    <%if(user.UserType === "Admin") {%>
+    <%if(user && user.UserType === "Admin") {%>
         <p><a href="/guest/bookings/room">Room Booking Requests</a></p>
+    <%}%>
+    <p><a href="/guest/foodOrders">Food Booking</a></p>
+    <%if(user && user.UserType === "Admin") {%>
+        <p><a href="/guest/bookings/food">Food Booking Requests</a></p>
     <%}%>
 </div>
 

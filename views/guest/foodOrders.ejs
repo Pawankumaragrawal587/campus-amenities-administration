@@ -1,0 +1,38 @@
+<%- include ('../partials/header') %>
+
+<div class="container">
+    <%if(user && user.UserType === "Admin") {%>
+        <p class="center"><a href="/guest/foodOrders/new" class="btn btn-primary" role="button">Start Taking New Orders</a></p>
+    <%}%>
+    <div>
+        <% foodOrders.forEach(function(order){ %>
+            <div class="mtp">
+                <h4>
+                    <span>Date: <%= order.OrderDate.toISOString().slice(0, 10) %></span>,
+                    <span>Type: <%= order.Type %></span>
+                </h4>
+                <div>
+                    <h5>Menu:</h5>
+                    <p><%=order.Menu%></p>
+                </div>
+                <p>
+                    <a href="/guest/foodBooking?OrdersID=<%=order.OrdersID%>" class="btn btn-primary" role="button">Book</a>
+                </p>
+                <div>
+                    <%if(user && user.UserType === "Admin") {%>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5>Booked Quantity: <%=order.BookedQuantity%></h5>
+                            </div>
+                            <div class="col-md-6">
+                                <a href="/guest/closeFoodOrder/<%=order.OrdersID%>" class="btn btn-danger" role="button">Stop Taking New Orders</a>
+                            </div>
+                        </div>
+                    <%}%>
+                </div>
+            </div>
+        <% }); %>
+    </div>
+</div>
+
+<%- include ('../partials/footer') %>

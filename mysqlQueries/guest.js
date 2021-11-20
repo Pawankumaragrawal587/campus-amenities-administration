@@ -1,9 +1,10 @@
+const { query } = require('express');
 const mysqlConnection = require('../mysqlQueries/mysqlConnection.js');
 
 var queryObj = {};
 
 //================================================
-//              Select Queries
+//                  Queries
 //================================================
 
 queryObj.selectUser = function(webmail) {
@@ -53,6 +54,66 @@ queryObj.updateRoomBookingStatus = function(params) {
     return mysqlQuery;
 }
 
+queryObj.openFoodBookings = function() {
+    const mysqlQuery = 
+        `
+            SELECT * FROM FoodOrders
+            WHERE Status="Open";
+        `
+    return mysqlQuery;
+}
+
+queryObj.closeFoodBooking = function(param) {
+    const mysqlQuery = 
+        `
+            UPDATE FoodOrders 
+            SET Status="Closed"
+            WHERE OrdersID=${param.OrdersID};
+        `
+    return mysqlQuery;
+}
+
+queryObj.findOrderUsingOrdersID = function(params) {
+    const mysqlQuery = 
+        `
+            SELECT * FROM FoodOrders 
+            WHERE OrdersID=${params.OrdersID} and Status="Open";
+        `
+    return mysqlQuery;
+}
+
+queryObj.pendingFoodBookings = function() {
+    const mysqlQuery = 
+        `
+            SELECT * FROM FoodBooking
+            NATURAL JOIN User_FoodBooking
+            NATURAL JOIN FoodOrders_FoodBooking
+            INNER JOIN FoodOrders ON FoodOrders_FoodBooking.OrdersID=FoodOrders.OrdersID
+            WHERE FoodBooking.Status="Pending";
+        `
+    return mysqlQuery;
+}
+
+queryObj.updateFoodBookingStatus = function(params) {
+    const mysqlQuery = 
+        `
+            UPDATE FoodBooking
+            SET Status="${params.status}"
+            WHERE BookingID=${params.bookingId};
+        `
+    return mysqlQuery;
+}
+
+queryObj.updateFoodOrdersBookedQuantity = function(params) {
+    const mysqlQuery = 
+        `
+            UPDATE FoodOrders
+            SET BookedQuantity=BookedQuantity+${params.Quantity}
+            WHERE OrdersID=${params.OrdersID};
+        `
+    return mysqlQuery;
+}
+
 //================================================
 //              Insert Queries
 //================================================
@@ -72,6 +133,42 @@ queryObj.insertGuest = function(params) {
             INSERT IGNORE INTO Guest
             VALUES ("${params.aadharNumber}", "${params.name}", ${params.age}, "${params.email}", "${params.mobile}");
         `
+    return mysqlQuery;
+}
+
+queryObj.insertFoodOrders = function(params) {
+    const mysqlQuery = 
+        `
+            INSERT INTO FoodOrders
+            VALUES (${params.OrdersID}, "${params.OrderDate}", "${params.Type}", "${params.Menu}", ${params.Cost}, "${params.BookedQuantity}", "${params.Status}");
+        `
+    return mysqlQuery;
+}
+
+queryObj.insertFoodBooking = function(params) {
+    const mysqlQuery = 
+        `
+            INSERT INTO FoodBooking
+            VALUES (${params.BookingID}, "${params.BookingTime}", "${params.Status}", ${params.Quantity}, "${params.PaymentMethod}", "${params.Mobile}", "${params.Address}");
+        `
+    return mysqlQuery;
+}
+
+queryObj.insertUser_FoodBooking = function(params) {
+    const mysqlQuery = 
+        `
+            INSERT INTO User_FoodBooking
+            VALUES ("${params.CollegeID}", ${params.BookingID});
+        `
+    return mysqlQuery;
+}
+
+queryObj.insertFoodOrders_FoodBooking = function(params) {
+    const mysqlQuery = 
+    `
+        INSERT INTO FoodOrders_FoodBooking
+        VALUES (${params.OrdersID}, ${params.BookingID});
+    `
     return mysqlQuery;
 }
 
@@ -124,6 +221,40 @@ const createGuestTableQuery =
         );
     `
 
+const createFoodBookingTableQuery = 
+    `
+        CREATE TABLE IF NOT EXISTS FoodBooking(
+            BookingID int Primary KEY,
+            BookingTime datetime NOT NULL,
+            Status varchar(10) NOT NULL CHECK (Status IN ("Approved", "Rejected", "Pending")),
+            Quantity int,
+            PaymentMethod varchar(20) NOT NULL,
+            Mobile char(10) NOT NULL,
+            Address varchar(100) NOT NULL
+        );
+    `
+
+const createFoodOrdersTableQuery = 
+    `
+        CREATE TABLE IF NOT EXISTS FoodOrders(
+            OrdersID int Primary Key,
+            OrderDate date,
+            Type varchar(10) CHECK (Type IN ("Breakfast", "Lunch", "Dinner")),
+            Menu varchar(100),
+            Cost int,
+            BookedQuantity int,
+            Status varchar(10) CHECK (Status IN ("Open", "Closed"))
+        );
+    `
+
+const createIDGeneratorTableQuery = 
+    `
+        CREATE TABLE IF NOT EXISTS IDGenerator(
+            TableName varchar(20) Primary Key,
+            ID int
+        );
+    `
+
 const createUser_BookingTableQuery = 
     `
         CREATE TABLE IF NOT EXISTS User_Booking(
@@ -157,11 +288,25 @@ const createGuest_BookingTableQuery =
         );
     `
 
-const createIDGeneratorTableQuery = 
+const createUser_FoodBookingTableQuery = 
     `
-        CREATE TABLE IF NOT EXISTS IDGenerator(
-            TableName varchar(20) Primary Key,
-            ID int
+        CREATE TABLE IF NOT EXISTS User_FoodBooking(
+            CollegeID varchar(20),
+            BookingID int,
+            CONSTRAINT User_FoodBooking_fk1 FOREIGN KEY (CollegeID) references User(CollegeID),
+            CONSTRAINT User_FoodBooking_fk2 FOREIGN KEY (BookingID) references FoodBooking(BookingID),
+            PRIMARY KEY (CollegeID, BookingID)
+        );
+    `
+
+const createFoodOrders_FoodBookingTableQuery = 
+    `
+        CREATE TABLE IF NOT EXISTS FoodOrders_FoodBooking(
+            OrdersID int,
+            BookingID int,
+            CONSTRAINT FoodOrders_FoodBooking_fk1 FOREIGN KEY (OrdersID) references FoodOrders(OrdersID),
+            CONSTRAINT FoodOrders_FoodBooking_fk2 FOREIGN KEY (BookingID) references FoodBooking(BookingID),
+            PRIMARY KEY (OrdersID, BookingID)
         );
     `
 
@@ -290,10 +435,14 @@ const queries = [
     createRoomTableQuery,
     createBookingTableQuery,
     createGuestTableQuery,
+    createFoodBookingTableQuery,
+    createFoodOrdersTableQuery,
+    createIDGeneratorTableQuery,
     createUser_BookingTableQuery,
     createRoom_BookingTableQuery,
     createGuest_BookingTableQuery,
-    createIDGeneratorTableQuery,
+    createUser_FoodBookingTableQuery,
+    createFoodOrders_FoodBookingTableQuery,
     'DROP PROCEDURE IF EXISTS InsertRoom;',
     createProcedureInsertRoomQuery,
     'CALL InsertRoom();',

@@ -1,0 +1,48 @@
+<%- include ('../partials/header') %>
+
+<div class="container">
+    <%foodBookingRequests.forEach(function(request){%>
+        <div class="card">
+            <div class="card-header">BookingID: <%=request.BookingID%></div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        CollegeID: <%=request.CollegeID%>
+                    </div>
+                    <div class="col-md-4">
+                        BookingTime: <%=request.BookingTime.toString().slice(0, 33)%>
+                    </div>
+                    <div class="col-md-4">
+                        PaymentMethod: <%=request.PaymentMethod%>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        Quantity: <%=request.Quantity%>
+                    </div>
+                    <div class="col-md-4">
+                        Mobile: <%=request.Mobile%>
+                    </div>
+                    <div class="col-md-4">
+                        Address: <%=request.Address%>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        OrderDate: <%=request.OrderDate.toISOString().slice(0, 10)%>
+                    </div>
+                    <div class="col-md-4">
+                        Type: <%=request.Type%>
+                    </div>
+                    <div class="col-md-4">
+                        Menu: <%=request.Menu%>
+                    </div>
+                </div>
+                <a class="btn btn-success btn-sm" href="/guest/booking/food/Approved/<%=request.BookingID%>?Quantity=<%=request.Quantity%>&OrdersID=<%=request.OrdersID%>">Approve</a>
+                <a class="btn btn-danger btn-sm" href="/guest/booking/food/Rejected/<%=request.BookingID%>">Reject</a>
+            </div>
+        </div>
+    <%});%>
+</div>
+
+<%- include ('../partials/footer') %>
