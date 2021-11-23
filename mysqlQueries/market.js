@@ -16,6 +16,29 @@ queryObj.selectAvailableShops = function(){
 }
 
 //================================================
+//             Insert Queries
+//================================================
+
+queryObj.insertShopKeeper = function(params) {
+    const mysqlQuery = 
+        `
+            INSERT INTO ShopKeeper
+            VALUES ("${params.ShopKeeperID}", "${params.ShopKeeperName}", "${params.MobileNo}", "${params.PanCardNo}", "${params.Address}");
+        `
+    return mysqlQuery;
+}
+
+queryObj.insertTender_Details = function(params) {
+    const mysqlQuery = 
+        `
+            INSERT INTO Tender_Details(ShopID, ShopKeeperID, ShopName, Tender_Status, TypeDescription)
+            VALUES ("${params.ShopID}", "${params.ShopKeeperID}", "${params.ShopName}", "${params.Tender_Status}", "${params.TypeDescription}");
+        `
+    return mysqlQuery;
+}
+
+
+//================================================
 //             Create Table Queries
 //================================================
 
@@ -79,8 +102,8 @@ const createTender_DetailsTableQuery =
             ShopID varchar(20),
             ShopKeeperID varchar(20),
             ShopName varchar(20) NOT NULL,
-            License_registered date NOT NULL,
-            License_expiry date NOT NULL,
+            License_registered date,
+            License_expiry date,
             Tender_Status varchar(10) NOT NULL,
             TypeDescription varchar(200) NOT NULL,
             CONSTRAINT Tender_Details_fk1 FOREIGN KEY (ShopID) references Shop(ShopID),

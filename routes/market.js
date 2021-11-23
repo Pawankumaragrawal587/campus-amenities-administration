@@ -12,7 +12,34 @@ router.get('/market/shopBooking',function(req,res){
 });
 
 router.post('/market/shopBooking', function(req,res){
-    // 'SELECT GetID("Shopkeeper") as ShopkeeperID;'
+    mysqlConnection.query('SELECT GetID("ShopKeeper") as ShopKeeperID;', function(err,result){
+        if(err) {
+            console.log(err);
+            req.flash('error', "Something Went Wrong!");
+            res.redirect('/market');
+        } else {
+            req.body.ShopKeeperID = result[0].ShopKeeperID;
+            req.body.Tender_Status = "Pending";
+            mysqlConnection.query(mysqlQueriesMarket.insertShopKeeper(req.body), function(err,result){
+                if(err) {
+                    console.log(err);
+                    req.flash('error', "Something Went Wrong!");
+                    res.redirect('/market');
+                } else {
+                    mysqlConnection.query(mysqlQueriesMarket.insertTender_Details(req.body), function(err,result){
+                        if(err) {
+                            console.log(err);
+                            req.flash('error', "Something Went Wrong!");
+                            res.redirect('/market');
+                        } else {
+                            req.flash('success', "Application Submitted Successfully!");
+                            res.redirect('/market');
+                        }
+                    });
+                }
+            });
+        }
+    });
 })
 
 
