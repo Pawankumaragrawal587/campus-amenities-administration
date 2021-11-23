@@ -86,7 +86,7 @@ mysqlConnection.connect(function(err){
         console.log("Database Connected Successfully");
         mysqlQueriesGuest.configDB();
         // mysqlQueriesLandscape.configDB();
-        mysqlQueriesMarket.configDB();
+        // mysqlQueriesMarket.configDB();
     }
 });
 
@@ -97,7 +97,7 @@ mysqlConnection.connect(function(err){
 const easyinvoice = require('easyinvoice');
 const fs = require('fs');
 
-function getInvoiceData(params) {
+function getInvoiceData(params, user) {
     const data = {
         "documentTitle": "RECEIPT", //Defaults to INVOICE
         "locale": "en-US", //Defaults to en-US, used for number formatting (see docs)
@@ -116,37 +116,29 @@ function getInvoiceData(params) {
             "country": "India"
         },
         "client": {
-               "company": "Client Corp",
-               "address": "Clientstreet 456",
-               "zip": "4567 CD",
-               "city": "Clientcity",
-               "country": "Clientcountry"
+               "company": user.Name,
+               "address": user.Webmail,
+               "zip": user.UserType,
+               "city": user.CollegeID,
+               "country": "Patna, India"
             //"custom1": "custom value 1",
             //"custom2": "custom value 2",
             //"custom3": "custom value 3"
         },
-        "invoiceNumber": "2021.0001",
-        "invoiceDate": "1.1.2021",
+        "invoiceNumber": params.InvoiceNumber,
+        "invoiceDate": params.InvoiceDate.toISOString().slice(0, 10).replace('T', ' '),
         "products": [
             {
-                "quantity": "4",
-                "description": "Test2",
+                "quantity": params.Quantity,
+                "description": params.Product,
                 "tax": 18,
-                "price": 10.45
+                "price": params.Cost
             }
         ],
         "bottomNotice": "Kindly pay your invoice to avoid last minute hassle. "
     };
     return data;
 }
-
-app.get('/pdf', function(req,res){
-    easyinvoice.createInvoice(data, function (result) {
-        const buf = Buffer.from(result.pdf, 'base64');
-        res.contentType("application/pdf");
-        res.send(buf);
-    });
-});
 
 // ================================================
 //                      ROUTES
@@ -180,6 +172,40 @@ app.get('/user/:CollegeID', middlewareObj.isLoggedIn, function(req,res){
             });
         }
     })
+});
+
+app.get('/invoice/:BookingType/:BookingID', middlewareObj.isInvoiceOwner, function(req,res){
+    if(req.params.BookingType === "roomBooking") {
+        mysqlConnection.query(mysqlQueriesGuest.selectBillUsingRoomBookingID(req.params), function(err,result){
+            if(err || result.length === 0) {
+                console.log(err);
+                res.redirect('back');
+            } else {
+                const data = getInvoiceData(result[0], req.user);
+                easyinvoice.createInvoice(data, function (result) {
+                    const buf = Buffer.from(result.pdf, 'base64');
+                    res.contentType("application/pdf");
+                    res.send(buf);
+                });
+            }
+        });
+    } else if(req.params.BookingType === "foodBooking") {
+        mysqlConnection.query(mysqlQueriesGuest.selectBillUsingFoodBookingID(req.params), function(err,result){
+            if(err || result.length === 0) {
+                console.log(err);
+                res.redirect('back');
+            } else {
+                const data = getInvoiceData(result[0], req.user);
+                easyinvoice.createInvoice(data, function (result) {
+                    const buf = Buffer.from(result.pdf, 'base64');
+                    res.contentType("application/pdf");
+                    res.send(buf);
+                });
+            }
+        });
+    } else {
+        res.redirect('back');
+    }
 });
 
 app.get('/login', middlewareObj.isLoggedOut, function(req, res){

@@ -153,6 +153,44 @@ queryObj.selectFoodBookingByUser = function(CollegeID) {
     return mysqlQuery;
 }
 
+queryObj.selectBillUsingRoomBookingID = function(params) {
+    const mysqlQuery = 
+        `
+            SELECT Bill.* FROM RoomBooking_Bill
+            NATURAL JOIN Bill
+            WHERE RoomBooking_Bill.BookingID=${params.BookingID};
+        `
+    return mysqlQuery;
+}
+
+queryObj.selectBillUsingFoodBookingID = function(params) {
+    const mysqlQuery = 
+        `
+            SELECT Bill.* FROM FoodBooking_Bill
+            NATURAL JOIN Bill
+            WHERE FoodBooking_Bill.BookingID=${params.BookingID};
+        `
+    return mysqlQuery;
+}
+
+queryObj.selectUser_Booking = function(params) {
+    const mysqlQuery = 
+        `
+            SELECT * FROM User_Booking
+            WHERE CollegeID="${params.CollegeID}" and BookingID=${params.BookingID};
+        `
+    return mysqlQuery;
+}
+
+queryObj.selectUser_FoodBooking = function(params) {
+    const mysqlQuery = 
+        `
+            SELECT * FROM User_FoodBooking
+            WHERE CollegeID="${params.CollegeID}" and BookingID=${params.BookingID};
+        `
+    return mysqlQuery;
+}
+
 //================================================
 //              Insert Queries
 //================================================
@@ -225,6 +263,24 @@ queryObj.insertUser_Bill = function(params) {
         `
             INSERT INTO User_Bill
             VALUES ("${params.CollegeID}", ${params.InvoiceNumber});
+        `
+    return mysqlQuery;
+}
+
+queryObj.insertRoomBooking_Bill = function(params) {
+    const mysqlQuery = 
+        `
+            INSERT INTO RoomBooking_Bill
+            VALUES (${params.BookingID}, ${params.InvoiceNumber});
+        `
+    return mysqlQuery;
+}
+
+queryObj.insertFoodBooking_Bill = function(params) {
+    const mysqlQuery = 
+        `
+            INSERT INTO FoodBooking_Bill
+            VALUES (${params.BookingID}, ${params.InvoiceNumber});
         `
     return mysqlQuery;
 }
@@ -396,6 +452,7 @@ const createRoomBooking_BillTableQuery =
             InvoiceNumber int,
             CONSTRAINT RoomBooking_Bill_fk1 FOREIGN KEY (BookingID) references Booking(BookingID),
             CONSTRAINT RoomBooking_Bill_fk2 FOREIGN KEY (InvoiceNumber) references Bill(InvoiceNumber),
+            PRIMARY KEY (BookingID, InvoiceNumber)
         );
     `
 
@@ -404,8 +461,9 @@ const createFoodBooking_BillTableQuery =
         CREATE TABLE IF NOT EXISTS FoodBooking_Bill(
             BookingID int,
             InvoiceNumber int,
-            CONSTRAINT RoomBooking_Bill_fk1 FOREIGN KEY (BookingID) references Booking(BookingID),
-            CONSTRAINT RoomBooking_Bill_fk2 FOREIGN KEY (InvoiceNumber) references Bill(InvoiceNumber),
+            CONSTRAINT FoodBooking_Bill_fk1 FOREIGN KEY (BookingID) references FoodBooking(BookingID),
+            CONSTRAINT FoodBooking_Bill_fk2 FOREIGN KEY (InvoiceNumber) references Bill(InvoiceNumber),
+            PRIMARY KEY (BookingID, InvoiceNumber)
         );
     `
 
@@ -544,6 +602,8 @@ const queries = [
     createUser_FoodBookingTableQuery,
     createFoodOrders_FoodBookingTableQuery,
     createUser_BillTableQuery,
+    createRoomBooking_BillTableQuery,
+    createFoodBooking_BillTableQuery,
     'DROP PROCEDURE IF EXISTS InsertRoom;',
     createProcedureInsertRoomQuery,
     'CALL InsertRoom();',

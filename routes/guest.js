@@ -160,6 +160,12 @@ function generateRoomBookingInvoice(params) {
                             mysqlConnection.query(mysqlQueriesGuest.insertUser_Bill(params), function(err,result){
                                 if(err) {
                                     console.log(err);
+                                } else {
+                                    mysqlConnection.query(mysqlQueriesGuest.insertRoomBooking_Bill(params), function(err,result){
+                                        if(err) {
+                                            console.log(err);
+                                        }
+                                    });
                                 }
                             })
                         }
@@ -176,6 +182,7 @@ router.get('/guest/booking/room/:status/:bookingId', middlewareObj.isAdmin, func
             req.flash('error', 'Something Went Wrong!');
         } else {
             req.params.CollegeID = req.user.CollegeID;
+            req.params.BookingID = req.params.bookingId;
             generateRoomBookingInvoice(req.params);
         }
         res.redirect('/guest/bookings/room');
@@ -304,6 +311,12 @@ function generateFoodBookingInvoice(params) {
                             mysqlConnection.query(mysqlQueriesGuest.insertUser_Bill(params), function(err,result){
                                 if(err){
                                     console.log(err);
+                                } else {
+                                    mysqlConnection.query(mysqlQueriesGuest.insertFoodBooking_Bill(params), function(err,result){
+                                        if(err) {
+                                            console.log(err);
+                                        }
+                                    });
                                 }
                             });
                         }
@@ -323,6 +336,7 @@ router.get('/guest/booking/food/:status/:bookingId', middlewareObj.isAdmin, func
             req.params.CollegeID = req.user.CollegeID;
             req.params.OrdersID = req.query.OrdersID;
             req.params.Quantity = req.query.Quantity;
+            req.params.BookingID = req.params.bookingId;
             generateFoodBookingInvoice(req.params);
             mysqlConnection.query(mysqlQueriesGuest.updateFoodOrdersBookedQuantity(req.query), function(err,results){
                 if(err) {
