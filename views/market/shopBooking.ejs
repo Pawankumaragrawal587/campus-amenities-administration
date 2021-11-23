@@ -1,0 +1,120 @@
+<%- include ('../partials/header') %>
+
+	<style>
+		.btn {
+			min-width: 200px;
+		}
+
+		label {
+			margin-bottom: 0.4rem;
+		}
+
+		.row1 {
+			display: flex;
+			align-items: flex-start;
+		}
+
+		.column1 {
+			flex: 50%;
+			margin-right: 2rem
+		}
+
+		.center {
+			display: block;
+			margin-top: 10px;
+			margin-left: auto;
+			margin-right: auto;
+		}
+	</style>
+
+	<div class="container">
+		<img src="https://us.123rf.com/450wm/siamimages/siamimages1602/siamimages160200339/51538842-shop-for-rent-icon-illustration-design.jpg?ver=6"
+			class="center" height="150" alt="Logo">
+		<h1 id="mainHeading">Shop Renting Form</h1>
+
+		<form action="/market/shopBooking" method="post">
+			<div class="row1">
+				<div class="column1">
+					<div>
+						<label for="exampleFormControlInput1">Shop ID</label>
+						<input type="text" class="form-control disable"
+							id="exampleFormControlInput1" value="" name=shopid">
+					</div>
+					<br>
+					<div class="form-group">
+						<label for="input1">ShopKeeper ID</label>
+						<input type="text" id="input1" name="shopkeeperid" class="form-control"
+							placeholder="Enter the your ID" autofocus required>
+					</div>
+					<br>
+					<div class="form-group">
+						<label for="input2">Mobile Number(+91)</label>
+						<input type="text" id="input2" name="mobile" class="form-control"
+							minlength="10" maxlength="10"
+							placeholder="Enter your mobile number" required>
+					</div>
+					<br>
+					<div class="form-group">
+						<label for="input3">Security Pass Register Date</label>
+						<input type="text" id="input3" name="spregister" class="form-control"
+							required>
+					</div>
+
+					<br>
+					<div class="form-group">
+						<label for="input4">Shop Name</label>
+						<input type="text" id="input4" name="shopname" class="form-control"
+							placeholder="Enter your preferred Shop Name" required>
+					</div>
+				</div>
+				<div class="column1">
+					<div>
+						<label for="exampleFormControlInput2">Shop Location</label>
+						<input type="text" class="form-control disable"
+							id="exampleFormControlInput2" value="" name="shoplocation">
+					</div>
+					<br>
+					<div class="form-group">
+						<label for="input5">Name</label>
+						<input type="text" id="input5" name="name" class="form-control"
+							placeholder="Enter your name" required>
+					</div>
+
+					<br>
+					<div class="form-group">
+						<label for="input6">PAN Card Number</label>
+						<input type="text" name="panno" id="input6" class="form-control"
+							placeholder="Enter your PAN No." minlength="10" maxlength="10"
+							required>
+					</div>
+
+					<br>
+					<div class="form-group">
+						<label for="input7">Security Pass Expiry Date</label>
+						<input type="text" id="input7" name="spexpiry" class="form-control"
+							required>
+					</div>
+
+				</div>
+			</div>
+			<br>
+			<div class="row">
+				<div class="mb-3">
+					<label for="exampleFormControlTextarea1" class="form-label">Shop Type
+						Description</label>
+					<textarea class="form-control" id="exampleFormControlTextarea1" rows="3"
+						name="shoptype"  maxlength="200" required></textarea>
+				</div>
+			</div>
+			<br>
+			<div class="text-center form-group">
+				<input type="submit" name="submit" class="btn btn-primary btn-block mb-4"
+					value="Submit">
+			</div>
+			
+		</form>
+
+	</div>
+
+
+<%- include ('../partials/footer') %>
