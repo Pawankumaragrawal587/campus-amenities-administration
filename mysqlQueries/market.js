@@ -26,7 +26,8 @@ const createShopTableQuery =
             Location varchar(20) NOT NULL,
             Rent int NOT NULL,
             Occupied varchar(5) NOT NULL CHECK (Occupied IN ("Yes", "No")),
-            Avg_Rating float NOT NULL
+            Avg_Rating float NOT NULL,
+            Img_link varchar(1000) NOT NULL
         );
     `
 
@@ -35,11 +36,9 @@ const createShopKeeperTableQuery =
         CREATE TABLE IF NOT EXISTS Shopkeeper(
             ShopKeeperID varchar(20) PRIMARY KEY,
             ShopKeeperName varchar(20) NOT NULL,
-            SecurityPass_registered date NOT NULL,
-            SecurityPass_expiry date NOT NULL,
             MobileNo varchar(10) NOT NULL,
             PanCardNo varchar(10) NOT NULL,
-            ShopName varchar(20) NOT NULL
+            Address varchar(50) NOT NULL            
         );
     `
 
@@ -79,6 +78,7 @@ const createTender_DetailsTableQuery =
         CREATE TABLE IF NOT EXISTS Tender_Details(
             ShopID varchar(20),
             ShopKeeperID varchar(20),
+            ShopName varchar(20) NOT NULL,
             License_registered date NOT NULL,
             License_expiry date NOT NULL,
             Tender_Status varchar(10) NOT NULL,
@@ -119,13 +119,13 @@ const createProcedureInsertShopQuery =
                         LEAVE insertionLoop;
                     END IF;
                     IF num<5 THEN 
-                        INSERT INTO Shop VALUES (CONCAT("Shop", num+1), CONCAT("Marketplace", num+1), 5000, "No", 0);
+                        INSERT INTO Shop VALUES (CONCAT("Shop", num+1), CONCAT("Marketplace"), 5000, "No", 0, "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=667&q=80");
                     ELSEIF num<10 THEN 
-                        INSERT INTO Shop VALUES (CONCAT("Shop", num+1), CONCAT("GuestHouse", num-5+1), 6000, "No", 0);
+                        INSERT INTO Shop VALUES (CONCAT("Shop", num+1), CONCAT("GuestHouse"), 6000, "No", 0, "https://hips.hearstapps.com/del.h-cdn.co/assets/16/24/1024x651/gallery-1466177617-2753296191-0f49c62756-b.jpg?resize=480:*");
                     ELSEIF num<15 THEN 
-                        INSERT INTO Shop VALUES (CONCAT("Shop", num+1), CONCAT("BoysHostel", num-10+1), 3000, "No", 0);
+                        INSERT INTO Shop VALUES (CONCAT("Shop", num+1), CONCAT("BoysHostel"), 3000, "No", 0, "https://media.istockphoto.com/photos/bike-shop-owner-working-on-vintage-bicycle-picture-id1184214694?b=1&k=20&m=1184214694&s=170667a&w=0&h=eP3L4cmfEk0CAJQ9WGLTbV67q6G_pP93aDaNZfXSTHg=");
                     ELSE 
-                        INSERT INTO Shop VALUES (CONCAT("Shop", num+1), CONCAT("TutorialBlock", num-15+1), 4000, "No", 0);
+                        INSERT INTO Shop VALUES (CONCAT("Shop", num+1), CONCAT("TutorialBlock"), 4000, "No", 0, "https://i.pinimg.com/originals/99/0c/3c/990c3c2d987a9fbfc7a24571815c94ca.jpg");
                     END IF;
                     SET num = num + 1;
                 END LOOP;
@@ -133,27 +133,27 @@ const createProcedureInsertShopQuery =
         END;
     `
 
-const createProcedureInsertShopKeeperQuery = 
-    `
-        CREATE PROCEDURE InsertShopKeeper()
-        BEGIN
-            declare num int default 0;
-            SELECT COUNT(*) INTO num FROM Shopkeeper;
-            IF num=0 THEN
-                insertionLoop: LOOP
-                    IF num>= 10 THEN 
-                        LEAVE insertionLoop;
-                    END IF;
-                    IF num<5 THEN 
-                        INSERT INTO Shopkeeper VALUES (CONCAT("Oth", num+1), CONCAT("Shopkeeper_NAME", num+1), CONCAT("2021-01-", num+10), CONCAT("2022-01-", num+10), LPAD(FLOOR(RAND() * 10000000000), 10, '0'), LPAD(FLOOR(RAND() * 10000000000), 10, '0'), CONCAT("Shop_NAME", num+1));
-                    ELSE
-                        INSERT INTO Shopkeeper VALUES (CONCAT("Oth", num+1), CONCAT("Shopkeeper_NAME", num+1-5), CONCAT("2021-02-", num+10), CONCAT("2022-02-", num+10), LPAD(FLOOR(RAND() * 10000000000), 10, '0'), LPAD(FLOOR(RAND() * 10000000000), 10, '0'), CONCAT("Shop_NAME", num+1-5));
-                    END IF;    
-                    SET num = num + 1;
-                END LOOP;
-            END IF;
-        END;
-    `
+// const createProcedureInsertShopKeeperQuery = 
+//     `
+//         CREATE PROCEDURE InsertShopKeeper()
+//         BEGIN
+//             declare num int default 0;
+//             SELECT COUNT(*) INTO num FROM Shopkeeper;
+//             IF num=0 THEN
+//                 insertionLoop: LOOP
+//                     IF num>= 10 THEN 
+//                         LEAVE insertionLoop;
+//                     END IF;
+//                     IF num<5 THEN 
+//                         INSERT INTO Shopkeeper VALUES (CONCAT("Oth", num+1), CONCAT("Shopkeeper_NAME", num+1), CONCAT("2021-01-", num+10), CONCAT("2022-01-", num+10), LPAD(FLOOR(RAND() * 10000000000), 10, '0'), LPAD(FLOOR(RAND() * 10000000000), 10, '0'), CONCAT("Shop_NAME", num+1));
+//                     ELSE
+//                         INSERT INTO Shopkeeper VALUES (CONCAT("Oth", num+1), CONCAT("Shopkeeper_NAME", num+1-5), CONCAT("2021-02-", num+10), CONCAT("2022-02-", num+10), LPAD(FLOOR(RAND() * 10000000000), 10, '0'), LPAD(FLOOR(RAND() * 10000000000), 10, '0'), CONCAT("Shop_NAME", num+1-5));
+//                     END IF;    
+//                     SET num = num + 1;
+//                 END LOOP;
+//             END IF;
+//         END;
+//     `
 
 //================================================
 //              Database Configuration
@@ -170,9 +170,9 @@ const queries = [
     'DROP PROCEDURE IF EXISTS InsertShop;',
     createProcedureInsertShopQuery,
     'CALL InsertShop();',
-    'DROP PROCEDURE IF EXISTS InsertShopKeeper;',
-    createProcedureInsertShopKeeperQuery,
-    'CALL InsertShopKeeper();'
+    // 'DROP PROCEDURE IF EXISTS InsertShopKeeper;',
+    // createProcedureInsertShopKeeperQuery,
+    // 'CALL InsertShopKeeper();'
 ]
 
 function executeQueries(queryNum) {

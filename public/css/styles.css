@@ -43,11 +43,14 @@
     width: 100%;
     max-height: 500px;
 }
-
+.figure-caption {
+    text-align: center;
+}
 .placemoreinfobtn {
     text-align: center;
     margin-top: 5px;
     margin-bottom: 10px;
+    margin-bottom: 1.25rem;
 }
 
 
@@ -60,3 +63,4 @@
     margin-bottom: 70px;
     margin-top: 50px;
 }
+

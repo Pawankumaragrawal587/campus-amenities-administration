@@ -152,12 +152,12 @@ app.get('/pdf', function(req,res){
 //                      ROUTES
 // ================================================
 
-const guestRoute = require('./routes/guest.js');
-const landscapeRoute = require('./routes/landscape.js');
+// const guestRoute = require('./routes/guest.js');
+// const landscapeRoute = require('./routes/landscape.js');
 const marketRoute = require('./routes/market.js');
 
-app.use(guestRoute);
-app.use(landscapeRoute);
+// app.use(guestRoute);
+// app.use(landscapeRoute);
 app.use(marketRoute);
 
 app.get("/",function(req,res){

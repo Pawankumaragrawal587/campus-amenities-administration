@@ -1,22 +1,59 @@
 <%- include ('../partials/header') %>
+<style>
 
-<div class="container">
+.cc{
+  color: #999999;
+  font-family: 'Roboto','Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: 0;
+  padding: 1rem;
+}
+
+
+.btn {
+  background-color: white;
+  border: 1px solid #cccccc;
+  color:  #696969;
+  padding: 0.5rem;
+  text-transform: lowercase;
+}
+
+.btn--block {
+  display: block;
+  width: 100%;
+}
+ 
+
+.card__title {
+  text-align: center;
+  color:#696969;
+  font-size: 1.25rem;
+  font-weight: 300;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+</style>
+
+
+<div class="container cc">
     <div class="row">
         <%shops.forEach(function(shop){%>
             <div class="col-md-4">
                 <div class="img-thumbnail">
-                    <img src="https://unsplash.it/800/600?image=82">
-                    <div class="figure-caption">
-                        <p4>Shop ID - <%= shop.ShopID %> </p4>
+                    <img src= <%=shop.Img_link%>>
+                    <div class="card__title">
+                        <p4><%= shop.ShopID %> </p4>
                     </div>
                     <div class="figure-caption">
-                        <p4>Location: <%= shop.Location %> </p4>
+                        <p4>Located near <%= shop.Location %> </p4>
                     </div>
                     <div class="figure-caption">
                         <p4>Rating: <%= shop.Avg_Rating %> </p4>
                     </div>
                     <div class="placemoreinfobtn">
-                        <a href="/market/shopBooking?shopID=<%=shop.ShopID%>&location=<%=shop.Location%>" class="btn btn-primary">Rent</a>
+                        <a href="/market/shopBooking?shopID=<%=shop.ShopID%>&location=<%=shop.Location%>" class="btn btn--block btn-secondary">Rent</a>
                     </div>
                 </div>
             </div>
@@ -24,4 +61,8 @@
     </div>
 </div>
 
+
 <%- include ('../partials/footer') %>
+
+
+
