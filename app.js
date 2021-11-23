@@ -86,8 +86,66 @@ mysqlConnection.connect(function(err){
         console.log("Database Connected Successfully");
         mysqlQueriesGuest.configDB();
         // mysqlQueriesLandscape.configDB();
-        // mysqlQueriesMarket.configDB();
+        mysqlQueriesMarket.configDB();
     }
+});
+
+//=================================================
+//              Invoice Configuration
+//=================================================
+
+const easyinvoice = require('easyinvoice');
+const fs = require('fs');
+
+function getInvoiceData(params) {
+    const data = {
+        "documentTitle": "RECEIPT", //Defaults to INVOICE
+        "locale": "en-US", //Defaults to en-US, used for number formatting (see docs)
+        "currency": "INR", //See documentation 'Locales and Currency' for more info
+        "taxNotation": "vat", //or gst
+        "marginTop": 25,
+        "marginRight": 25,
+        "marginLeft": 25,
+        "marginBottom": 25,
+        "logo": fs.readFileSync("./public/images/IITP_Logo.jfif", 'base64'),
+        "sender": {
+            "company": "IIT Patna",
+            "address": "Guest House, IIT Patna",
+            "zip": "801106",
+            "city": "Bihta",
+            "country": "India"
+        },
+        "client": {
+               "company": "Client Corp",
+               "address": "Clientstreet 456",
+               "zip": "4567 CD",
+               "city": "Clientcity",
+               "country": "Clientcountry"
+            //"custom1": "custom value 1",
+            //"custom2": "custom value 2",
+            //"custom3": "custom value 3"
+        },
+        "invoiceNumber": "2021.0001",
+        "invoiceDate": "1.1.2021",
+        "products": [
+            {
+                "quantity": "4",
+                "description": "Test2",
+                "tax": 18,
+                "price": 10.45
+            }
+        ],
+        "bottomNotice": "Kindly pay your invoice to avoid last minute hassle. "
+    };
+    return data;
+}
+
+app.get('/pdf', function(req,res){
+    easyinvoice.createInvoice(data, function (result) {
+        const buf = Buffer.from(result.pdf, 'base64');
+        res.contentType("application/pdf");
+        res.send(buf);
+    });
 });
 
 // ================================================
@@ -107,7 +165,21 @@ app.get("/",function(req,res){
 });
 
 app.get('/user/:CollegeID', middlewareObj.isLoggedIn, function(req,res){
-    res.render('user');
+    mysqlConnection.query(mysqlQueriesGuest.selectRoomBookingByUser(req.user.CollegeID), function(err, result1){
+        if(err) {
+            console.log(err);
+            res.redirect('/');
+        } else {
+            mysqlConnection.query(mysqlQueriesGuest.selectFoodBookingByUser(req.user.CollegeID), function(err, result2){
+                if(err) {
+                    console.log(err);
+                    res.redirect('/');
+                } else {
+                    res.render('user', {roomBookings:result1, foodBookings:result2});
+                }
+            });
+        }
+    })
 });
 
 app.get('/login', middlewareObj.isLoggedOut, function(req, res){

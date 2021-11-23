@@ -38,7 +38,7 @@
 					<div>
 						<label for="exampleFormControlInput1">Shop ID</label>
 						<input type="text" class="form-control disable"
-							id="exampleFormControlInput1" value="" name=shopid">
+							id="exampleFormControlInput1" value="<%=shopData.shopID%>" name="shopid">
 					</div>
 					<br>
 					<div class="form-group">
@@ -56,7 +56,7 @@
 					<br>
 					<div class="form-group">
 						<label for="input3">Security Pass Register Date</label>
-						<input type="text" id="input3" name="spregister" class="form-control"
+						<input type="date" id="input3" name="spregister" class="form-control"
 							required>
 					</div>
 
@@ -71,7 +71,7 @@
 					<div>
 						<label for="exampleFormControlInput2">Shop Location</label>
 						<input type="text" class="form-control disable"
-							id="exampleFormControlInput2" value="" name="shoplocation">
+							id="exampleFormControlInput2" value="<%=shopData.location%>" name="shoplocation">
 					</div>
 					<br>
 					<div class="form-group">
@@ -91,7 +91,7 @@
 					<br>
 					<div class="form-group">
 						<label for="input7">Security Pass Expiry Date</label>
-						<input type="text" id="input7" name="spexpiry" class="form-control"
+						<input type="date" id="input7" name="spexpiry" class="form-control"
 							required>
 					</div>
 

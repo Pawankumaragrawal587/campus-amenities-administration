@@ -2,6 +2,18 @@ const mysqlConnection = require('../mysqlQueries/mysqlConnection.js');
 
 var queryObj = {};
 
+//================================================
+//             Select Queries
+//================================================
+
+queryObj.selectAvailableShops = function(){
+    const mysqlQuery = 
+        `
+            SELECT * FROM Shop 
+            Where Occupied="No";
+        `
+    return mysqlQuery;
+}
 
 //================================================
 //             Create Table Queries

@@ -136,10 +136,47 @@ router.get('/guest/bookings/room', middlewareObj.isAdmin, function(req,res){
     });
 });
 
+function generateRoomBookingInvoice(params) {
+    mysqlConnection.query('SELECT GetID("Bill") as InvoiceNumber;', function(err,result){
+        if(err || result.length===0) {
+            console.log(err);
+        } else {
+            params.InvoiceNumber = result[0].InvoiceNumber;
+            params.InvoiceDate = new Date().toISOString().slice(0, 10);
+            params.Quantity = 1;
+            mysqlConnection.query(mysqlQueriesGuest.selectRoomFromRoomBookingID(params), function(err,result){
+                if(err) {
+                    console.log(err);
+                } else {
+                    params.Cost = result[0].Cost;
+                    params.Product = result[0].Occupancy + ' room';
+                    if(result[0].HasBathroom === "Yes") {
+                        params.Product = params.Product + ' With Bathroom';
+                    }
+                    mysqlConnection.query(mysqlQueriesGuest.insertBill(params), function(err,result){
+                        if(err) {
+                            console.log(err);
+                        } else {
+                            mysqlConnection.query(mysqlQueriesGuest.insertUser_Bill(params), function(err,result){
+                                if(err) {
+                                    console.log(err);
+                                }
+                            })
+                        }
+                    });
+                }
+            });
+        }
+    });
+}
+
 router.get('/guest/booking/room/:status/:bookingId', middlewareObj.isAdmin, function(req,res){
     mysqlConnection.query(mysqlQueriesGuest.updateRoomBookingStatus(req.params), function(err,results){
         if(err) {
             req.flash('error', 'Something Went Wrong!');
+        } else {
+            req.params.CollegeID = req.user.CollegeID;
+            generateRoomBookingInvoice(req.params);
         }
         res.redirect('/guest/bookings/room');
     });
@@ -247,12 +284,46 @@ router.get('/guest/bookings/food', middlewareObj.isAdmin, function(req,res){
     });
 });
 
+function generateFoodBookingInvoice(params) {
+    mysqlConnection.query('SELECT GetID("Bill") as InvoiceNumber;', function(err,result){
+        if(err || result.length===0) {
+            console.log(err);
+        } else {
+            params.InvoiceNumber = result[0].InvoiceNumber;
+            params.InvoiceDate = new Date().toISOString().slice(0, 10);
+            mysqlConnection.query(mysqlQueriesGuest.selectFoodOrder(params), function(err,result){
+                if(err) {
+                    console.log(err);
+                } else {
+                    params.Cost = result[0].Cost;
+                    params.Product = result[0].Type + ' On ' + result[0].OrderDate.toISOString().slice(0, 10);
+                    mysqlConnection.query(mysqlQueriesGuest.insertBill(params), function(err,result){
+                        if(err) {
+                            console.log(err);
+                        } else {
+                            mysqlConnection.query(mysqlQueriesGuest.insertUser_Bill(params), function(err,result){
+                                if(err){
+                                    console.log(err);
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        }
+    });
+}
+
 router.get('/guest/booking/food/:status/:bookingId', middlewareObj.isAdmin, function(req,res){
     mysqlConnection.query(mysqlQueriesGuest.updateFoodBookingStatus(req.params), function(err,results){
         if(err) {
             req.flash('error', 'Something Went Wrong!');
             res.redirect('/guest/bookings/food');
         } else if(req.params.status === "Approved") {
+            req.params.CollegeID = req.user.CollegeID;
+            req.params.OrdersID = req.query.OrdersID;
+            req.params.Quantity = req.query.Quantity;
+            generateFoodBookingInvoice(req.params);
             mysqlConnection.query(mysqlQueriesGuest.updateFoodOrdersBookedQuantity(req.query), function(err,results){
                 if(err) {
                     req.flash('error', 'Something Went Wrong!');

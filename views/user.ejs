@@ -2,4 +2,55 @@
 
 <h1 class="center">Welcome <%=user.Name%>!</h1>
 
+<div class="container mtp">
+    <div class="row center">
+        <div class="col-md-6">
+            <h3>Room Bookings</h3>
+            <%roomBookings.forEach(function(booking){%>
+                <div class="card mtp">
+                    <div class="card-header">
+                        <span>BookingID: <%=booking.BookingID%></span>
+                    </div>
+                    <div class="card-body">
+                        <div class="row center">
+                            <div col-md-3>
+                                Booked On: <%=booking.BookingTime.toISOString().slice(0, 10)%>
+                            </div>
+                            <div col-md-3>
+                                Status: <%=booking.Status%>
+                            </div>
+                        </div>
+                        <%if(booking.Status==="Approved"){%>
+                            <a class="btn btn-success btn-sm" href="/invoice/roomBooking/<%=booking.BookingID%>">Invoice</a>
+                        <%}%>
+                    </div>
+                </div>
+            <%});%>
+        </div>
+        <div class="col-md-6">
+            <h3>Food Bookings</h3>
+            <%foodBookings.forEach(function(booking){%>
+                <div class="card mtp">
+                    <div class="card-header">
+                        <span>BookingID: <%=booking.BookingID%></span>
+                    </div>
+                    <div class="card-body">
+                        <div class="row center">
+                            <div col-md-3>
+                                Booked On: <%=booking.BookingTime.toISOString().slice(0, 10)%>
+                            </div>
+                            <div col-md-3>
+                                Status: <%=booking.Status%>
+                            </div>
+                        </div>
+                        <%if(booking.Status==="Approved"){%>
+                            <a class="btn btn-success btn-sm" href="/invoice/foodBooking/<%=booking.BookingID%>">Invoice</a>
+                        <%}%>
+                    </div>
+                </div>
+            <%});%>
+        </div>
+    </div>
+</div>
+
 <%- include ('partials/footer') %>

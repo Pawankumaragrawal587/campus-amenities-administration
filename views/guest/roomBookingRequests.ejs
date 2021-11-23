@@ -1,6 +1,9 @@
 <%- include ('../partials/header') %>
 
 <div class="container">
+    <%if(roomBookingRequests.length===0) {%>
+        <h2 class="center">No More Pending Requests are Present.</h2>
+    <%}%>
     <%roomBookingRequests.forEach(function(request){%>
         <div class="card">
             <div class="card-header">BookingID: <%=request.BookingID%></div>

@@ -1,3 +1,27 @@
 <%- include ('../partials/header') %>
 
+<div class="container">
+    <div class="row">
+        <%shops.forEach(function(shop){%>
+            <div class="col-md-4">
+                <div class="img-thumbnail">
+                    <img src="https://unsplash.it/800/600?image=82">
+                    <div class="figure-caption">
+                        <p4>Shop ID - <%= shop.ShopID %> </p4>
+                    </div>
+                    <div class="figure-caption">
+                        <p4>Location: <%= shop.Location %> </p4>
+                    </div>
+                    <div class="figure-caption">
+                        <p4>Rating: <%= shop.Avg_Rating %> </p4>
+                    </div>
+                    <div class="placemoreinfobtn">
+                        <a href="/market/shopBooking?shopID=<%=shop.ShopID%>&location=<%=shop.Location%>" class="btn btn-primary">Rent</a>
+                    </div>
+                </div>
+            </div>
+        <%});%>
+    </div>
+</div>
+
 <%- include ('../partials/footer') %>
