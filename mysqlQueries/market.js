@@ -16,6 +16,29 @@ queryObj.selectAvailableShops = function(){
 }
 
 //================================================
+//             Insert Queries
+//================================================
+
+queryObj.insertShopKeeper = function(params) {
+    const mysqlQuery = 
+        `
+            INSERT INTO ShopKeeper
+            VALUES ("${params.ShopKeeperID}", "${params.ShopKeeperName}", "${params.MobileNo}", "${params.PanCardNo}", "${params.Address}");
+        `
+    return mysqlQuery;
+}
+
+queryObj.insertTender_Details = function(params) {
+    const mysqlQuery = 
+        `
+            INSERT INTO Tender_Details(ShopID, ShopKeeperID, ShopName, Tender_Status, TypeDescription)
+            VALUES ("${params.ShopID}", "${params.ShopKeeperID}", "${params.ShopName}", "${params.Tender_Status}", "${params.TypeDescription}");
+        `
+    return mysqlQuery;
+}
+
+
+//================================================
 //             Create Table Queries
 //================================================
 
