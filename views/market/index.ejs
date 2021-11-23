@@ -1,5 +1,33 @@
 <%- include ('../partials/header') %>
 
-<h1 class="center">This is market page!</h1>
+<div class="container">
+    <h1 class="center">This is Market page!</h1>
+    <p><a href="/market/activeShops">Active Shops in the Campus</a></p>
+    <!-- <%if(user && user.UserType === "Others") {%>
+        <p><a href="/market/shopRenting">Shops available for Rent</a></p>
+    <%}%>
+    <%if(user && user.UserType === "Admin") {%>
+        <p><a href="/market/request/shopRent">Renting a shop request</a></p>
+    <%}%>
+    <%if(user && user.UserType === "Others") {%>
+        <p><a href="/market/billPayment">Rent and Bill Payment for Shop owned</a></p>
+    <%}%>
+    <%if(user && user.UserType === "Admin") {%>
+        <p><a href="/market/request/payment">Shop bills Payment request</a></p>
+    <%}%> -->
+
+    <br>
+    <hr>
+    <p><a href="/market/shopBooking">Booking Shop form </a></p>
+    <p><a href="/market/shopRentingRequests">Booking Shop Request</a></p>
+    <br>
+    <hr>
+    <p><a href="/market/billPaymentform">Bill Payment form </a></p>
+    <p><a href="/market/billPaymentRequests">Bill Payment Request</a></p>
+    <br>
+    <hr>
+    <p><a href="/market/feedbackform">feedback form </a></p>
+
+</div>
 
 <%- include ('../partials/footer') %>
