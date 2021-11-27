@@ -371,6 +371,16 @@ const createBillTableQuery =
         );
     `
 
+const createExpenditureTableQuery = 
+    `
+        CREATE TABLE IF NOT EXISTS Expenditure(
+            ExpenditureID int Primary Key,
+            Description varchar(200) NOT NULL,
+            Amount int NOT NULL,
+            Date date NOT NULL
+        );
+    `
+
 const createIDGeneratorTableQuery = 
     `
         CREATE TABLE IF NOT EXISTS IDGenerator(
@@ -595,6 +605,7 @@ const queries = [
     createFoodBookingTableQuery,
     createFoodOrdersTableQuery,
     createBillTableQuery,
+    createExpenditureTableQuery,
     createIDGeneratorTableQuery,
     createUser_BookingTableQuery,
     createRoom_BookingTableQuery,

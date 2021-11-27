@@ -32,13 +32,13 @@
 		<img src="https://cdn-icons-png.flaticon.com/512/1087/1087916.png"
 			class="center" height="150" alt="Logo">
 		<h1 id="mainHeading">Feedback Form</h1>
-		<form action="/market/feedbackform" method="post">
+		<form action="/market/feedbackform?shopID=<%=ShopID%>" method="post">
 			<div class="row1">
 				<div class="column1">
 					<div>
 						<label for="exampleFormControlInput1">Shop Name</label>
 						<input type="text" class="form-control disable"
-							id="exampleFormControlInput1" value="" name=shopid">
+							id="exampleFormControlInput1" value="<%=shopName%>" name="ShopName">
 					</div>
 					<br>        
 					<div class="form-group">
@@ -62,7 +62,7 @@
 					<div>
 						<label for="exampleFormControlInput2">ShopKeeper Name</label>
 						<input type="text" class="form-control disable"
-							id="exampleFormControlInput2" value="" name="shopkeeperid">
+							id="exampleFormControlInput2" value="<%=shopKeeperName%>" name="ShopKeeperName">
 					</div>
 					<br>
 					<div class="form-group">

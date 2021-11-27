@@ -73,6 +73,15 @@ queryObj.selectActiveShops = function() {
     return mysqlQuery;
 }
 
+queryObj.selectShopKeeper = function(params) {
+    const mysqlQuery = 
+        `
+            SELECT * FROM ShopKeeper
+            WHERE ShopKeeperID="${params.ShopKeeperID}";
+        `
+    return mysqlQuery;
+}
+
 //================================================
 //             Insert Queries
 //================================================
@@ -94,6 +103,34 @@ queryObj.insertTender_Details = function(params) {
         `
     return mysqlQuery;
 }
+
+queryObj.insertFeedback = function(params) {
+    const mysqlQuery = 
+        `
+            INSERT INTO ShopFeedback
+            VALUES ("${params.FeedbackID}", "${params.ServiceQuality}", "${params.ShopWorkerBehaviour}", "${params.Feedback}");
+        `
+    return mysqlQuery;
+}
+
+queryObj.insertShop_Performance = function(params) {
+    const mysqlQuery = 
+        `
+            INSERT INTO Shop_Performance
+            VALUES ("${params.ShopID}", "${params.FeedbackID}");
+        `
+    return mysqlQuery;
+}
+
+queryObj.insertFeedback_user = function(params) {
+    const mysqlQuery = 
+        `
+            INSERT INTO Feedback_user
+            VALUES ("${params.CollegeID}", "${params.FeedbackID}");
+        `
+    return mysqlQuery;
+}
+
 
 
 //================================================
@@ -247,6 +284,28 @@ const createProcedureInsertShopQuery =
 //     `
 
 //================================================
+//            Create Triggers
+//================================================
+
+const createTriggerUpdateRating = 
+    `
+        CREATE TRIGGER AFTER_Shop_Performance_Insertion
+        AFTER INSERT
+        ON Shop_Performance FOR EACH ROW
+        BEGIN
+            DECLARE NumberOfFeedbacks float;
+            DECLARE TotalRating float;
+            DECLARE NewRating float;
+            DECLARE OldAverageRating float;
+            SELECT COUNT(*) into NumberOfFeedbacks FROM Shop_Performance WHERE ShopID=New.ShopID;
+            SELECT ServiceQuality INTO NewRating FROM ShopFeedback WHERE FeedbackID=New.FeedbackID;
+            SELECT Avg_Rating INTO OldAverageRating FROM Shop WHERE ShopID=New.ShopID; 
+            SET TotalRating=(NumberOfFeedbacks-1)*OldAverageRating+NewRating;
+            UPDATE Shop SET Avg_Rating=TotalRating/NumberOfFeedbacks WHERE ShopID=New.ShopID;
+        END
+    `
+
+//================================================
 //              Database Configuration
 //================================================
 
@@ -256,11 +315,14 @@ const queries = [
     createShopFeedbackTableQuery,
     createRentPaymentTableQuery,
     createShop_PerformanceTableQuery,
+    createFeedback_userTableQuery,
     createTender_DetailsTableQuery,
     createPayment_DetailsTableQuery,
     'DROP PROCEDURE IF EXISTS InsertShop;',
     createProcedureInsertShopQuery,
     'CALL InsertShop();',
+    'DROP TRIGGER IF EXISTS AFTER_Shop_Performance_Insertion',
+    createTriggerUpdateRating
     // 'DROP PROCEDURE IF EXISTS InsertShopKeeper;',
     // createProcedureInsertShopKeeperQuery,
     // 'CALL InsertShopKeeper();'

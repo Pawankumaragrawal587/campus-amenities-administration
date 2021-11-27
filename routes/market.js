@@ -111,8 +111,58 @@ router.get('/market/billPaymentRequests',function(req,res){
     res.render("market/billPaymentRequests");
 });
 
-router.get('/market/feedbackform',function(req,res){
-    res.render("market/feedbackform", {shopID:req.query.shopID});
+router.get('/market/feedbackform', middlewareObj.isLoggedIn, function(req,res){
+    mysqlConnection.query(mysqlQueriesMarket.selectShopKeeper(req.query), function(err,result){
+        if(err || result.length===0) {
+            console.log(err);
+            res.redirect('back');
+        } else {
+            res.render("market/feedbackform", {shopName:req.query.ShopName, shopKeeperName:result[0].ShopKeeperName, ShopID:req.query.ShopID});      
+        }
+    });
+});
+
+router.post('/market/feedbackform', middlewareObj.isLoggedIn, function(req,res){
+    if(!req.body.ServiceQuality) {
+        req.body.ServiceQuality=0.5;
+    }
+    req.body.ShopID = req.query.shopID;
+    req.body.CollegeID = req.user.CollegeID;
+    mysqlConnection.query('SELECT GetID("ShopFeedback") as FeedbackID;', function(err,result){
+        if(err || result.length===0) {
+            console.log(err);
+            req.flash('error', 'Something Went Wrong!');
+            res.redirect('/market/activeShops');
+        } else {
+            req.body.FeedbackID = result[0].FeedbackID;
+            mysqlConnection.query(mysqlQueriesMarket.insertFeedback(req.body), function(err,result){
+                if(err) {
+                    console.log(err);
+                    req.flash('error', 'Something Went Wrong!');
+                    res.redirect('/market/activeShops');
+                } else {
+                    mysqlConnection.query(mysqlQueriesMarket.insertShop_Performance(req.body), function(err,result){
+                        if(err) {
+                            console.log(err);
+                            req.flash('error', 'Something Went Wrong!');
+                            res.redirect('/market/activeShops');
+                        } else {
+                            mysqlConnection.query(mysqlQueriesMarket.insertFeedback_user(req.body), function(err,result){
+                                if(err) {
+                                    console.log(err);
+                                    req.flash('error', 'Something Went Wrong!');
+                                    res.redirect('/market/activeShops');
+                                } else {
+                                    req.flash('success', 'Feedback Submitted Successfully!');
+                                    res.redirect('/market/activeShops');
+                                }
+                            });
+                        }
+                    })
+                }
+            })
+        }
+    });
 });
 
 router.get('/market/availableShops', function(req,res){

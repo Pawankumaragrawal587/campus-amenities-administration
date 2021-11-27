@@ -352,4 +352,16 @@ router.get('/guest/booking/food/:status/:bookingId', middlewareObj.isAdmin, func
     });
 });
 
+//===================================================
+//              Expenditures
+//===================================================
+
+router.get('/guest/expenditures', middlewareObj.isAdmin, function(req,res){
+    
+});
+
+router.get('/guest/expenditures/new', middlewareObj.isAdmin, function(req,res){
+    res.render('guest/newExpenditure');
+});
+
 module.exports = router;

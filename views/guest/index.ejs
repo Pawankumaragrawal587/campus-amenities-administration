@@ -10,6 +10,12 @@
     <%if(user && user.UserType === "Admin") {%>
         <p><a href="/guest/bookings/food">Food Booking Requests</a></p>
     <%}%>
+    <%if(user && user.UserType === "Admin") {%>
+        <p><a href="/guest/Expenditures">Old Expenditures</a></p>
+    <%}%>
+    <%if(user && user.UserType === "Admin") {%>
+        <p><a href="/guest/Expenditures/new">Add New Expenditure</a></p>
+    <%}%>
 </div>
 
 <%- include ('../partials/footer') %>
