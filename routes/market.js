@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const mysqlConnection = require('../mysqlQueries/mysqlConnection.js');
 const mysqlQueriesMarket = require('../mysqlQueries/market.js');
+const middlewareObj = require('../middleware/index.js');
 
 router.get('/market',function(req,res){
     res.render("market/index");
@@ -40,9 +41,61 @@ router.post('/market/shopBooking', function(req,res){
             });
         }
     });
-})
+});
 
-router.get('market/shopKeeperDetails', function(req,res){
+router.get('/market/shopRentingRequests', middlewareObj.isAdmin, function(req,res){
+    mysqlConnection.query(mysqlQueriesMarket.selectPendingTenderRequests(), function(err,result){
+        if(err) {
+            console.log(err);
+            res.redirect('/market');
+        } else {
+            res.render('market/shopRentingRequests', {requests: result});
+        }
+    });
+});
+
+router.get('/market/shopRentingRequests/:Status', middlewareObj.isAdmin, function(req,res){
+    req.query.Status=req.params.Status;
+    req.query.License_registered = new Date().toISOString().slice(0, 10);
+    const d = new Date();
+    const year = d.getFullYear();
+    const month = d.getMonth();
+    const day = d.getDate();
+    req.query.License_expiry = new Date(year + 2, month, day).toISOString().slice(0, 10);
+    if(req.params.Status === "Approved") {
+        mysqlConnection.query(mysqlQueriesMarket.updateLicense(req.query), function(err,result){
+            if(err) {
+                console.log(err);
+            }
+        });
+        mysqlConnection.query(mysqlQueriesMarket.setShopAsOccupied(req.query), function(err,result){
+            if(err) {
+                console.log(err);
+            }
+        })
+    }
+    mysqlConnection.query(mysqlQueriesMarket.updateTenderStatus(req.query), function(err,result){
+        if(err) {
+            console.log(err);
+            res.redirect('back');
+        } else {
+            res.redirect('/market/ShopRentingRequests');
+        }
+    })
+});
+
+router.get('/market/activeShops', function(req,res){
+    mysqlConnection.query(mysqlQueriesMarket.selectActiveShops(), function(err,results){
+        if(err) {
+            console.log(err);
+            res.redirect('/market');
+        } else {
+            res.render('market/activeShops', {shops: results});
+        }
+    })
+});
+
+router.get('/market/shopKeeperDetails', function(req,res){
     res.render("market/shopKeeperDetails");
 })
 
@@ -59,7 +112,7 @@ router.get('/market/billPaymentRequests',function(req,res){
 });
 
 router.get('/market/feedbackform',function(req,res){
-    res.render("market/feedbackform");
+    res.render("market/feedbackform", {shopID:req.query.shopID});
 });
 
 router.get('/market/availableShops', function(req,res){

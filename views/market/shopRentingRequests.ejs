@@ -1,48 +1,42 @@
 <%- include ('../partials/header') %>
 
 <div class="container">
-	// <%roomBookingRequests.forEach(function(request){%>
+	<%requests.forEach(function(request){%>
 	    <div class="card">
-		<div class="card-header">ShopID: </div>
+		<div class="card-header">ShopID: <%=request.ShopID%> </div>
 		<div class="card-body">
 		    <div class="row">
 			<div class="col-md-4">
-			    ShopKeeperID: 
+			    ShopKeeperID: <%=request.ShopKeeperID%>
 			</div>
 			<div class="col-md-4">
-			    BookingTime: 
+			    ShopKeeperName: <%=request.ShopKeeperName%> 
 			</div>
 			<div class="col-md-4">
-			    PaymentMethod: 
+			    ShopName: <%=request.ShopName%> 
 			</div>
 		    </div>
 		    <div class="row">
 			<div class="col-md-4">
-			    RoomNumber: 
+			    MobileNo: <%=request.MobileNo%>
 			</div>
 			<div class="col-md-4">
-			    BookedFrom: 
+			    PanCardNo: <%=request.PanCardNo%>
 			</div>
 			<div class="col-md-4">
-			    BookedTill: 
+			    
 			</div>
 		    </div>
 		    <div class="row">
-			<div class="col-md-4">
-			    ShopKeeperName: 
-			</div>
-			<div class="col-md-4">
-			    PanCardNumber: 
-			</div>
-			<div class="col-md-4">
-			    PreferredShopName: 
-			</div>
+				<div class="col">
+					Description: <%=request.TypeDescription%>
+				</div>
 		    </div>
-		    <a class="btn btn-success btn-sm" href="/guest/booking/room/Approved/>Approve"</a>
-		    <a class="btn btn-danger btn-sm" href="/guest/booking/room/Rejected/>Reject"</a>
+		    <a class="btn btn-success btn-sm" href="/market/shopRentingRequests/Approved?ShopID=<%=request.ShopID%>&ShopKeeperID=<%=request.ShopKeeperID%>">Approve</a>
+		    <a class="btn btn-danger btn-sm" href="/market/shopRentingRequests/Rejected?ShopID=<%=request.ShopID%>&ShopKeeperID=<%=request.ShopKeeperID%>">Reject</a>
 		</div>
 	    </div>
-	//<%});%>
+	<%});%>
     </div>
 
 <%- include ('../partials/footer') %>

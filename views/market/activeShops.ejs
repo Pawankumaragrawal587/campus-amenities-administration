@@ -1,3 +1,73 @@
 <%- include ('../partials/header') %>
 
+<style>
+
+    .cc{
+      color: #999999;
+      font-family: 'Roboto','Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-style: normal;
+      font-weight: 400;
+      letter-spacing: 0;
+      padding: 1rem;
+    }
+    
+    
+    .btn {
+      background-color: white;
+      border: 1px solid #cccccc;
+      color:  #696969;
+      padding: 0.5rem;
+      text-transform: lowercase;
+    }
+    
+    .btn--block {
+      display: block;
+      width: 100%;
+    }
+    
+    img {
+        float: left;
+        width:  200px;
+        height: 300px;
+        object-fit: cover;
+    }
+    
+    .card__title {
+      text-align: center;
+      color: azure;
+      font-size: 1.25rem;
+      font-weight: 300;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-top: 2px;
+      background-color: #696969;
+    }
+    
+</style>
+    
+    
+<div class="container cc">
+    <div class="row">
+        <%shops.forEach(function(shop){%>
+            <div class="col-md-4">
+                <div class="img-thumbnail">
+                    <img src= <%=shop.Img_link%>>
+                    <div class="card__title">
+                        <p4><%= shop.ShopName %> </p4>
+                    </div>
+                    <div class="figure-caption">
+                        <p4>Located near <%= shop.Location %> </p4>
+                    </div>
+                    <div class="figure-caption">
+                        <p4>Rating: <%= shop.Avg_Rating %> </p4>
+                    </div>
+                    <div class="placemoreinfobtn">
+                        <a href="/market/feedbackform?shopID=<%=shop.ShopID%>" class="btn btn--block btn-secondary">Feedback</a>
+                    </div>
+                </div>
+            </div>
+        <%});%>
+    </div>
+</div>
+
 <%- include ('../partials/footer') %>

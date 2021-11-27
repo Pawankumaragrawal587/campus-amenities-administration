@@ -15,11 +15,60 @@ queryObj.selectAvailableShops = function(){
     return mysqlQuery;
 }
 
-queryObj.selectAvailableShops = function(){
+queryObj.selectShopKeeper = function(){
+    const mysqlQuery = 
+        `
+            SELECT * FROM ShopKeeper;
+        `
+    return mysqlQuery;
+}
+
+queryObj.selectPendingTenderRequests = function() {
+    const mysqlQuery = 
+        `
+            SELECT * FROM Tender_Details
+            NATURAL JOIN ShopKeeper
+            WHERE Tender_Details.Tender_Status="Pending";
+        `
+    return mysqlQuery;
+}
+
+queryObj.updateTenderStatus = function(params) {
+    const mysqlQuery = 
+        `
+            UPDATE Tender_Details
+            SET Tender_Status="${params.Status}" 
+            WHERE ShopID="${params.ShopID}" and ShopKeeperID="${params.ShopKeeperID}";
+        `
+    return mysqlQuery;
+}
+
+queryObj.updateLicense = function(params) {
+    const mysqlQuery = 
+        `
+            UPDATE Tender_Details
+            SET License_registered = "${params.License_registered}" , License_expiry = "${params.License_expiry}" 
+            WHERE ShopID="${params.ShopID}" and ShopKeeperID="${params.ShopKeeperID}";
+        `
+    return mysqlQuery;
+}
+
+queryObj.setShopAsOccupied = function(params) {
+    const mysqlQuery = 
+        `
+            UPDATE Shop
+            SET Occupied="Yes" 
+            WHERE ShopID="${params.ShopID}";
+        `
+    return mysqlQuery;
+}
+
+queryObj.selectActiveShops = function() {
     const mysqlQuery = 
         `
             SELECT * FROM Shop 
-            Where Occupied="No";
+            NATURAL JOIN Tender_Details
+            WHERE Occupied="Yes" and Tender_Status="Approved" and License_expiry>=CURDATE(); 
         `
     return mysqlQuery;
 }
