@@ -127,9 +127,9 @@ const  createShopFeedbackTableQuery =
     `
         CREATE TABLE IF NOT EXISTS ShopFeedback(
             FeedbackID varchar(20) PRIMARY KEY,
-            ServiceQuality varchar(10) NOT NULL,
+            ServiceQuality float NOT NULL,
             ShopWorkerBehaviour varchar(10) NOT NULL CHECK (ShopWorkerBehaviour IN ("Polite", "Rude")),
-            Email varchar(50) NOT NULL
+            Feedback varchar(250)
         );
     `
 const  createRentPaymentTableQuery = 
@@ -153,7 +153,17 @@ const createShop_PerformanceTableQuery =
             PRIMARY KEY (ShopID,FeedbackID)
         );
     `
+const createFeedback_userTableQuery =
+    `
+        CREATE TABLE IF NOT EXISTS Feedback_user(
+            CollegeID varchar(20),
+            FeedbackID varchar(20),
+            CONSTRAINT Feedback_user_fk1 FOREIGN KEY (CollegeID) references User(CollegeID),
+            CONSTRAINT Feedback_user_fk2 FOREIGN KEY (FeedbackID) references ShopFeedback(FeedbackID),
+            PRIMARY KEY (CollegeID,FeedbackID)
+        )
 
+    `
 const createTender_DetailsTableQuery = 
     `
         CREATE TABLE IF NOT EXISTS Tender_Details(

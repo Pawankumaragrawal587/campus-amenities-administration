@@ -25,6 +25,7 @@
 			margin-left: auto;
 			margin-right: auto;
 		}
+
 	</style>
 
 	<div class="container">
@@ -35,46 +36,54 @@
 			<div class="row1">
 				<div class="column1">
 					<div>
-						<label for="exampleFormControlInput1">Shop ID</label>
+						<label for="exampleFormControlInput1">Shop Name</label>
 						<input type="text" class="form-control disable"
 							id="exampleFormControlInput1" value="" name=shopid">
 					</div>
-					<br>
-					<div class="form-group">
-						<label for="input1">Feedback ID</label>
-						<input type="text" id="input1" name="feedbackid" class="form-control"
-							placeholder="Enter the your feedback ID" autofocus required>
-					</div>
-					<br>
+					<br>        
 					<div class="form-group">
 						<label for="input2">Service Quality</label>
-						<input type="text" id="input2" name="servicequality" class="form-control"
-							placeholder="Enter the quality of service" required>
+						<br>
+						<fieldset class="rating" id="input2">
+							<input type="radio" id="star5" name="ServiceQuality" value="5" /><label class = "full" for="star5" title="Awesome - 5 stars"></label>
+							<input type="radio" id="star4half" name="ServiceQuality" value="4.5" /><label class="half" for="star4half" title="Pretty good - 4.5 stars"></label>
+							<input type="radio" id="star4" name="ServiceQuality" value="4" /><label class = "full" for="star4" title="Pretty good - 4 stars"></label>
+							<input type="radio" id="star3half" name="ServiceQuality" value="3.5" /><label class="half" for="star3half" title="Meh - 3.5 stars"></label>
+							<input type="radio" id="star3" name="ServiceQuality" value="3" /><label class = "full" for="star3" title="Meh - 3 stars"></label>
+							<input type="radio" id="star2half" name="ServiceQuality" value="2.5" /><label class="half" for="star2half" title="Kinda bad - 2.5 stars"></label>
+							<input type="radio" id="star2" name="ServiceQuality" value="2" /><label class = "full" for="star2" title="Kinda bad - 2 stars"></label>
+							<input type="radio" id="star1half" name="ServiceQuality" value="1.5" /><label class="half" for="star1half" title="Meh - 1.5 stars"></label>
+							<input type="radio" id="star1" name="ServiceQuality" value="1" /><label class = "full" for="star1" title="Sucks big time - 1 star"></label>
+							<input type="radio" id="starhalf" name="ServiceQuality" value="0.5" /><label class="half" for="starhalf" title="Sucks big time - 0.5 stars"></label>
+						</fieldset>						      
 					</div>
 				</div>
 				<div class="column1">
 					<div>
-						<label for="exampleFormControlInput2">ShopKeeper ID</label>
+						<label for="exampleFormControlInput2">ShopKeeper Name</label>
 						<input type="text" class="form-control disable"
 							id="exampleFormControlInput2" value="" name="shopkeeperid">
 					</div>
 					<br>
 					<div class="form-group">
-						<label for="input3">Name</label>
-						<input type="text" id="input3" name="name" class="form-control"
-							placeholder="Enter your name" required>
-					</div>
-
-					<br>
-					<div class="form-group">
 						<label for="input4">Shop Workers' Behaviour</label>
-						<input type="text" name="swbehaviour" id="input4" class="form-control"
-							placeholder=""
-							required>
+						<select id="Select" class="form-select" name="ShopWorkerBehaviour" required>
+								<option selected>Choose the Behaviour</option>
+								<option value="Polite">Polite</option>
+								<option value="Rude">Rude</option>
+						</select>	
 					</div>
 				</div>
 			</div>
 			<br>
+			<div class="row">
+				<div class="mb-3">
+					<label for="exampleFormControlTextarea1" class="form-label">Shop
+						Feedback</label>
+					<textarea class="form-control" id="exampleFormControlTextarea1" rows="3"
+						name="Feedback"  maxlength="250" required></textarea>
+				</div>
+			</div>
 			<div class="text-center form-group">
 				<input type="submit" name="submit" class="btn btn-primary btn-block mb-4"
 					value="Submit">
