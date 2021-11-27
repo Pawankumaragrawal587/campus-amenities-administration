@@ -85,7 +85,7 @@ mysqlConnection.connect(function(err){
     } else {
         console.log("Database Connected Successfully");
         mysqlQueriesGuest.configDB();
-        // mysqlQueriesLandscape.configDB();
+        mysqlQueriesLandscape.configDB();
         mysqlQueriesMarket.configDB();
     }
 });
@@ -144,12 +144,12 @@ function getInvoiceData(params, user) {
 //                      ROUTES
 // ================================================
 
-// const guestRoute = require('./routes/guest.js');
-// const landscapeRoute = require('./routes/landscape.js');
+const guestRoute = require('./routes/guest.js');
+const landscapeRoute = require('./routes/landscape.js');
 const marketRoute = require('./routes/market.js');
 
-// app.use(guestRoute);
-// app.use(landscapeRoute);
+app.use(guestRoute);
+app.use(landscapeRoute);
 app.use(marketRoute);
 
 app.get("/",function(req,res){

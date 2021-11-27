@@ -42,6 +42,9 @@ router.post('/market/shopBooking', function(req,res){
     });
 })
 
+router.get('market/shopKeeperDetails', function(req,res){
+    res.render("market/shopKeeperDetails");
+})
 
 router.get('/market/shopRentingRequests',function(req,res){
     res.render("market/shopRentingRequests");

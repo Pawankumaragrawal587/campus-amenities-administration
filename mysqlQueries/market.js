@@ -15,6 +15,15 @@ queryObj.selectAvailableShops = function(){
     return mysqlQuery;
 }
 
+queryObj.selectAvailableShops = function(){
+    const mysqlQuery = 
+        `
+            SELECT * FROM Shop 
+            Where Occupied="No";
+        `
+    return mysqlQuery;
+}
+
 //================================================
 //             Insert Queries
 //================================================
@@ -101,7 +110,7 @@ const createTender_DetailsTableQuery =
         CREATE TABLE IF NOT EXISTS Tender_Details(
             ShopID varchar(20),
             ShopKeeperID varchar(20),
-            ShopName varchar(20) NOT NULL,
+            ShopName varchar(50) NOT NULL,
             License_registered date,
             License_expiry date,
             Tender_Status varchar(10) NOT NULL,
