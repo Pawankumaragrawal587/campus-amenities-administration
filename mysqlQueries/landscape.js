@@ -66,7 +66,8 @@ const createGardener_UserTableQuery =
             GID varchar(10) ,
             CollegeID varchar(10),
             CONSTRAINT Gardener_User_fk1 FOREIGN KEY (GID) references Gardener(GID),
-            CONSTRAINT Gardener_User_fk2 FOREIGN KEY (CollegeID) references User(CollegeID)
+            CONSTRAINT Gardener_User_fk2 FOREIGN KEY (CollegeID) references User(CollegeID).
+            PRIMARY KEY(GID,CollegeID)
             
         );
     `
@@ -76,7 +77,8 @@ const createGardener_CampusAreaTableQuery =
             GID varchar(10) ,
             AID varchar(10),
             CONSTRAINT Gardener_CampusArea_fk1 FOREIGN KEY (GID) references Gardener(GID),
-            CONSTRAINT Gardener_CampusArea_fk2 FOREIGN KEY (AID) references CampusArea(AID)
+            CONSTRAINT Gardener_CampusArea_fk2 FOREIGN KEY (AID) references CampusArea(AID),
+            PRIMARY KEY(GID,AID)
             
         );
     `
@@ -86,8 +88,8 @@ const createGardener_EquipmentTableQuery =
             GID varchar(10) ,
             EID varchar(10),
             CONSTRAINT Gardener_Equipment_fk1 FOREIGN KEY (GID) references Gardener(GID),
-            CONSTRAINT Gardener_Equipment_fk2 FOREIGN KEY (EID) references Equipment(EID)
-            
+            CONSTRAINT Gardener_Equipment_fk2 FOREIGN KEY (EID) references Equipment(EID),
+            PRIMARY KEY(GID,EID)
         );
     `
 const createGardener_GrasscuttingRequestTableQuery = 
@@ -96,7 +98,8 @@ const createGardener_GrasscuttingRequestTableQuery =
             GID varchar(10) ,
             GrasscuttingRequestID varchar(10),
             CONSTRAINT Gardener_GrasscuttingRequest_fk1 FOREIGN KEY (GID) references Gardener(GID),
-            CONSTRAINT Gardener_GrasscuttingRequest_fk2 FOREIGN KEY (GrasscuttingRequestID) references GrasscuttingRequest(GrasscuttingRequestID)
+            CONSTRAINT Gardener_GrasscuttingRequest_fk2 FOREIGN KEY (GrasscuttingRequestID) references GrasscuttingRequest(GrasscuttingRequestID),
+            PRIMARY KEY(GrasscuttingRequestID,GID)
             
         );
     `
