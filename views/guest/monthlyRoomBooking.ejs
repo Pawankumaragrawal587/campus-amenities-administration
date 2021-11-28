@@ -1,0 +1,67 @@
+<%- include ('../partials/header') %>
+
+<h1 class="center">Monthly Room Bookings</h1>
+
+<div class="container">
+    <form class="row g-3 justify-content-center" action="/guest/monthlyBookings/room" method="POST">
+        <div class="col-auto">
+            <label for="exampleFormControlInput1">Month and Year</label>
+        </div>
+        <div class="col-auto">
+            <input type="month" class="form-control" id="exampleFormControlInput1" value="<% if(monthAndYear){ %><%=monthAndYear%><% } %>" name="monthAndYear">
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary mb-3">View Bookings</button>
+        </div>
+    </form>
+    <%if(!monthAndYear) {%>
+        <h2 class="center">Select Month And Year and View Bookings</h2>
+    <%} else if(bookings.length===0) {%>
+        <h2 class="center">No Records Available for selected Month</h2>
+    <%} else {%>
+        <h3 class="center">Monthly Booking Amount: ₹ <%=totalBookingAmount%></h3>
+        <h2 class="center">Bookings</h2>
+    <%}%>
+    <%bookings.forEach(function(request){%>
+        <div class="card">
+            <div class="card-header">BookingID: <%=request.BookingID%></div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        CollegeID: <%=request.CollegeID%>
+                    </div>
+                    <div class="col-md-4">
+                        BookingTime: <%=request.BookingTime.toString().slice(0, 33)%>
+                    </div>
+                    <div class="col-md-4">
+                        PaymentMethod: <%=request.PaymentMethod%>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        RoomNumber: <%=request.RoomNumber%>
+                    </div>
+                    <div class="col-md-4">
+                        BookedFrom: <%=request.BookedFrom.toString().slice(0, 33)%>
+                    </div>
+                    <div class="col-md-4">
+                        BookedTill: <%=request.BookedTill.toString().slice(0, 33)%>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        Occupancy: <%=request.Occupancy%>
+                    </div>
+                    <div class="col-md-4">
+                        HasBathroom: <%=request.HasBathroom%>
+                    </div>
+                    <div class="col-md-4">
+                        Cost: <%=request.Cost%>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <%})%>
+</div>
+
+<%- include ('../partials/footer') %>

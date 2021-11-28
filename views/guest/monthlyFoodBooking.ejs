@@ -1,10 +1,28 @@
 <%- include ('../partials/header') %>
 
+<h1 class="center">Monthly Food Bookings</h1>
+
 <div class="container">
-    <%if(foodBookingRequests.length===0) {%>
-        <h2 class="center">No More Pending Requests are Present.</h2>
+    <form class="row g-3 justify-content-center" action="/guest/monthlyBookings/food" method="POST">
+        <div class="col-auto">
+            <label for="exampleFormControlInput1">Month and Year</label>
+        </div>
+        <div class="col-auto">
+            <input type="month" class="form-control" id="exampleFormControlInput1" value="<% if(monthAndYear){ %><%=monthAndYear%><% } %>" name="monthAndYear">
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary mb-3">View Bookings</button>
+        </div>
+    </form>
+    <%if(!monthAndYear) {%>
+        <h2 class="center">Select Month And Year and View Bookings</h2>
+    <%} else if(bookings.length===0) {%>
+        <h2 class="center">No Records Available for selected Month</h2>
+    <%} else {%>
+        <h3 class="center">Monthly Booking Amount: ₹ <%=totalBookingAmount%></h3>
+        <h2 class="center">Bookings</h2>
     <%}%>
-    <%foodBookingRequests.forEach(function(request){%>
+    <%bookings.forEach(function(request){%>
         <div class="card">
             <div class="card-header">BookingID: <%=request.BookingID%></div>
             <div class="card-body">
@@ -41,11 +59,9 @@
                         Cost: <%=request.Cost%>
                     </div>
                 </div>
-                <a class="btn btn-success btn-sm" href="/guest/booking/food/Approved/<%=request.BookingID%>?Quantity=<%=request.Quantity%>&OrdersID=<%=request.OrdersID%>">Approve</a>
-                <a class="btn btn-danger btn-sm" href="/guest/booking/food/Rejected/<%=request.BookingID%>">Reject</a>
             </div>
         </div>
-    <%});%>
+    <%})%>
 </div>
 
 <%- include ('../partials/footer') %>
