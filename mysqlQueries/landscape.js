@@ -121,6 +121,23 @@ const createProcedureInsertGardenerQuery =
             END IF;
         END;
     `
+const createProcedureInsertEquipmentQuery = 
+    `
+        CREATE PROCEDURE InsertEquipment()
+        BEGIN
+            declare num int default 0;
+            SELECT COUNT(*) INTO num FROM Equipment;
+            IF num=0 THEN
+                insertionLoop: LOOP
+                    IF num>=10 THEN 
+                        LEAVE insertionLoop;
+                    END IF;
+                    INSERT INTO Equipment VALUES (CONCAT("E", num+1), CONCAT("EquipmentName_", num+1),FLOOR(RAND()*(10000-100+1))+100);
+                    SET num = num + 1;
+                END LOOP;
+            END IF;
+        END;
+    `
 
     
 const createProcedureInsertCampusAreaQuery = 
@@ -155,6 +172,9 @@ const queries = [
     'DROP PROCEDURE IF EXISTS InsertGardener;',
     createProcedureInsertGardenerQuery,
     'CALL InsertGardener();',
+    'DROP PROCEDURE IF EXISTS InsertEquipment;',
+    createProcedureInsertEquipmentQuery,
+    'CALL InsertEquipment();',
     'DROP PROCEDURE IF EXISTS InsertCampusArea;',
     createProcedureInsertCampusAreaQuery,
     'CALL InsertCampusArea();'
