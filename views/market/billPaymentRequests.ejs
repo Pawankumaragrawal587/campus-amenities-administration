@@ -1,47 +1,40 @@
 <%- include ('../partials/header') %>
 <div class="container">
-	// <%roomBookingRequests.forEach(function(request){%>
+	<%requests.forEach(function(request){%>
 	    <div class="card">
-		<div class="card-header">ShopID: </div>
+		<div class="card-header">
+			<span>ShopID: <%=request.ShopID%></span>
+			<span style="margin-left: 20px;">ShopKeeperID: <%=request.ShopKeeperID%></span>
+		</div>
 		<div class="card-body">
 		    <div class="row">
-			<div class="col-md-4">
-			    ShopKeeperID: 
+				<div class="col-md-4">
+					Rent ReferenceID: <%=request.RentReferenceID%>
+				</div>
+				<div class="col-md-4">
+					Rent Amount: <%=request.RentPaid%>
+				</div>
+				<div class="col-md-4">
+					Month: <%=request.Month%>
+				</div>
 			</div>
-			<div class="col-md-4">
-			    BookingTime: 
+			<div class="row">
+				<div class="col-md-4">
+					Electricity Bill ReferenceID: <%=request.BillReferenceID%>
+				</div>
+				<div class="col-md-4">
+					ElectricityBillPaid: <%=request.ElectricityBillPaid%>
+				</div>
+				<div class="col-md-4">
+					Year: <%=request.Year%>
+				</div>
 			</div>
-			<div class="col-md-4">
-			    PaymentMethod: 
-			</div>
-		    </div>
-		    <div class="row">
-			<div class="col-md-4">
-			    RoomNumber: 
-			</div>
-			<div class="col-md-4">
-			    BookedFrom: 
-			</div>
-			<div class="col-md-4">
-			    BookedTill: 
-			</div>
-		    </div>
-		    <div class="row">
-			<div class="col-md-4">
-			    ShopKeeperName: 
-			</div>
-			<div class="col-md-4">
-			    PanCardNumber: 
-			</div>
-			<div class="col-md-4">
-			    PreferredShopName: 
-			</div>
-		    </div>
-		    <a class="btn btn-success btn-sm" href="/guest/booking/room/Approved/>Approve"</a>
-		    <a class="btn btn-danger btn-sm" href="/guest/booking/room/Rejected/>Reject"</a>
+			<br>
+		    <a class="btn btn-success btn-sm" href="/market/billPaymentRequests/Verified?ShopID=<%=request.ShopID%>&ShopKeeperID=<%=request.ShopKeeperID%>&Month=<%=request.Month%>&Year=<%=request.Year%>">Verify</a>
+		    <a class="btn btn-danger btn-sm" href="/market/billPaymentRequests/Declined?ShopID=<%=request.ShopID%>&ShopKeeperID=<%=request.ShopKeeperID%>&Month=<%=request.Month%>&Year=<%=request.Year%>">Decline</a>
 		</div>
 	    </div>
-	//<%});%>
-    </div>
+	<%});%>
+</div>
 
 <%- include ('../partials/footer') %>

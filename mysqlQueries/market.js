@@ -82,6 +82,26 @@ queryObj.selectShopKeeper = function(params) {
     return mysqlQuery;
 }
 
+queryObj.selectPendingPaymentVerification = function() {
+    const mysqlQuery = 
+        `
+            SELECT * FROM Payment_Details
+            WHERE Payment_Status="Pending";
+        `
+    return mysqlQuery;
+}
+
+queryObj.updateDOVAndStatus = function(params) {
+    const mysqlQuery = 
+        `
+            UPDATE Payment_Details
+            SET DateOfVerification="${params.DateOfVerification}", Payment_Status="${params.Payment_Status}"
+            WHERE ShopID="${params.ShopID}" and ShopKeeperID="${params.ShopKeeperID}" and Month=${params.Month} and Year=${params.Year};
+
+        `
+    return mysqlQuery;
+}
+
 //================================================
 //             Insert Queries
 //================================================
@@ -131,7 +151,14 @@ queryObj.insertFeedback_user = function(params) {
     return mysqlQuery;
 }
 
-
+queryObj.insertPayment_Details = function(params) {
+    const mysqlQuery = 
+        `
+            INSERT INTO Payment_Details(ShopID, ShopKeeperID, Month, Year, RentReferenceID, BillReferenceID, RentPaid, ElectricityBillPaid, Payment_Status)
+            VALUES ("${params.ShopID}", "${params.ShopKeeperID}", "${params.Month}", "${params.Year}", "${params.RentReferenceID}", "${params.BillReferenceID}", "${params.RentPaid}",  "${params.ElectricityBillPaid}",  "${params.Payment_Status}");
+        `
+    return mysqlQuery;
+}
 
 //================================================
 //             Create Table Queries
@@ -212,15 +239,17 @@ const createPayment_DetailsTableQuery =
         CREATE TABLE IF NOT EXISTS Payment_Details(
             ShopID varchar(20),
             ShopKeeperID varchar(20),
+            Month int NOT NULL,
+            Year int NOT NULL,
             RentReferenceID varchar(20),
             BillReferenceID varchar(20),
             RentPaid int NOT NULL,
             ElectricityBillPaid int NOT NULL,
-            DateofVerification date NOT NULL,
+            DateofVerification date,
             Payment_Status varchar(10) NOT NULL,
             CONSTRAINT Payment_Details_fk1 FOREIGN KEY (ShopID) references Shop(ShopID),
             CONSTRAINT Payment_Details_fk2 FOREIGN KEY (ShopKeeperID) references ShopKeeper(ShopKeeperID),
-            PRIMARY KEY (ShopID, ShopKeeperID)
+            PRIMARY KEY (ShopID, ShopKeeperID, Month, Year)
         );
     `    
     

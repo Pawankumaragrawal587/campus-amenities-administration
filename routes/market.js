@@ -176,11 +176,40 @@ router.get('/market/billPaymentform',function(req,res){
 });
 
 router.post('/market/billPaymentform', function(req,res){
-
+    req.body.Payment_Status = 'Pending';
+    const d = new Date(req.body.MonthAndYear);
+    req.body.Month = d.getMonth()+1;
+    req.body.Year = d.getFullYear();
+    mysqlConnection.query(mysqlQueriesMarket.insertPayment_Details(req.body), function(err,result){
+        if(err) {
+            req.flash('error', 'Something Went Wrong! Please check your details and submit again.');
+            console.log(err);
+            res.redirect('/market/billPaymentform');
+        } else {
+            req.flash('success', 'Payment Verification form submitted successfully!');
+            res.redirect('/market');
+        }
+    });
 });
 
-router.get('/market/billPaymentRequests',function(req,res){
-    res.render("market/billPaymentRequests");
+router.get('/market/billPaymentRequests', middlewareObj.isAdmin, function(req,res){
+    mysqlConnection.query(mysqlQueriesMarket.selectPendingPaymentVerification(), function(err,result){
+        res.render('market/billPaymentRequests', {requests:result});
+    });
 });
+
+router.get('/market/billPaymentRequests/:Status', middlewareObj.isAdmin, function(req,res){
+    req.query.DateOfVerification = new Date().toISOString().slice(0, 10);
+    req.query.Payment_Status = req.params.Status;
+    mysqlConnection.query(mysqlQueriesMarket.updateDOVAndStatus(req.query), function(err,result){
+        if(err) {
+            console.log(err);
+            req.flash('error', 'Something Went Wrong!');
+            res.redirect('/market/billPaymentRequests');
+        } else {
+            res.redirect('/market/billPaymentRequests');
+        }
+    })
+})
 
 module.exports = router;
