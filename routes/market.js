@@ -96,8 +96,16 @@ router.get('/market/activeShops', function(req,res){
 });
 
 router.get('/market/shopKeeperDetails', function(req,res){
-    res.render("market/shopKeeperDetails");
-})
+    mysqlConnection.query(mysqlQueriesMarket.selectShopKeeperinfo(), function(err,results){
+      if(err){
+        console.log(err);
+        res.redirect('/market');
+      }else{
+        res.render("market/shopKeeperDetails", {shopkeeper: results});
+      }
+        
+    })
+});
 
 router.get('/market/shopRentingRequests',function(req,res){
     res.render("market/shopRentingRequests");

@@ -15,7 +15,7 @@ queryObj.selectAvailableShops = function(){
     return mysqlQuery;
 }
 
-queryObj.selectShopKeeper = function(){
+queryObj.selectShopKeeperinfo = function(){
     const mysqlQuery = 
         `
             SELECT * FROM ShopKeeper;
