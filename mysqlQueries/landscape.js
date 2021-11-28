@@ -47,17 +47,17 @@ const createMaintainanceRequestTableQuery =
             CONSTRAINT MaintainanceRequest_fk2 FOREIGN KEY(EID) references Equipment(EID) 
         );
     `
-const createGrasscuttingRequestTableQuery = 
+const createGrassCuttingRequestTableQuery = 
     `
-        CREATE TABLE IF NOT EXISTS GrasscuttingRequest(
-            GrasscuttingRequestID varchar(10) PRIMARY KEY,
+        CREATE TABLE IF NOT EXISTS GrassCuttingRequest(
+            GrassCuttingRequestID varchar(10) PRIMARY KEY,
             GID varchar(10),
             AID varchar(10),
             Date date NOT NULL,
             Comments varchar(50),
             Status varchar(15) NOT NULL,
-            CONSTRAINT GrasscuttingRequest_fk1 FOREIGN KEY (GID) references Gardener(GID),
-            CONSTRAINT GrasscuttingRequest_fk2 FOREIGN KEY (AID) references CampusArea(AID)
+            CONSTRAINT GrassCuttingRequest_fk1 FOREIGN KEY (GID) references Gardener(GID),
+            CONSTRAINT GrassCuttingRequest_fk2 FOREIGN KEY (AID) references CampusArea(AID)
         );
     `
 const createGardener_UserTableQuery = 
@@ -92,14 +92,14 @@ const createGardener_EquipmentTableQuery =
             PRIMARY KEY(GID,EID)
         );
     `
-const createGardener_GrasscuttingRequestTableQuery = 
+const createGardener_GrassCuttingRequestTableQuery = 
     `
-        CREATE TABLE IF NOT EXISTS Gardener_GrasscuttingRequest(
+        CREATE TABLE IF NOT EXISTS Gardener_GrassCuttingRequest(
             GID varchar(10) ,
-            GrasscuttingRequestID varchar(10),
-            CONSTRAINT Gardener_GrasscuttingRequest_fk1 FOREIGN KEY (GID) references Gardener(GID),
-            CONSTRAINT Gardener_GrasscuttingRequest_fk2 FOREIGN KEY (GrasscuttingRequestID) references GrasscuttingRequest(GrasscuttingRequestID),
-            PRIMARY KEY(GrasscuttingRequestID,GID)
+            GrassCuttingRequestID varchar(10),
+            CONSTRAINT Gardener_GrassCuttingRequest_fk1 FOREIGN KEY (GID) references Gardener(GID),
+            CONSTRAINT Gardener_GrassCuttingRequest_fk2 FOREIGN KEY (GrassCuttingRequestID) references GrassCuttingRequest(GrassCuttingRequestID),
+            PRIMARY KEY(GrassCuttingRequestID,GID)
             
         );
     `
@@ -167,11 +167,11 @@ const queries = [
     createEquipmentTableQuery,
     createCampusAreaTableQuery,
     createMaintainanceRequestTableQuery,
-    createGrasscuttingRequestTableQuery,
+    createGrassCuttingRequestTableQuery,
     createGardener_UserTableQuery,
     createGardener_CampusAreaTableQuery,
     createGardener_EquipmentTableQuery,
-    createGardener_GrasscuttingRequestTableQuery,
+    createGardener_GrassCuttingRequestTableQuery,
     'DROP PROCEDURE IF EXISTS InsertGardener;',
     createProcedureInsertGardenerQuery,
     'CALL InsertGardener();',
