@@ -13,8 +13,16 @@
         }
 
         .center {
-          position: absolute;
-          top: 50%;
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+          align-items: center;
+          justify-items: center;
+        }
+
+        .centerid {
+          position: absolute;        
+          top: 60%;
           left: 50%;
           transform: translate(-50%, -50%);
         }
@@ -135,15 +143,16 @@
           font-size: 0.8em;
         }
       </style>
+      
       <div class="center">
 	<%shopkeeper.forEach(function(shopkeeper){%>
 		<div class="card">
 			<div class="additional">
 			  <div class="user-card">
-			    <div class="level center">
+			    <div class="level centerid">
 			      Shop Keeper ID
 			    </div>
-			    <div class="points center">
+			    <div class="points centerid">
 			      ID No: <%= shopkeeper.ShopKeeperID %>
 			    </div>
 			    <div class="image-pos"><img src = "https://static.thenounproject.com/png/3920404-200.png"></div>

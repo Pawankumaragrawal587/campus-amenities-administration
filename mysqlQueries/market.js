@@ -169,16 +169,6 @@ const  createShopFeedbackTableQuery =
             Feedback varchar(250)
         );
     `
-const  createRentPaymentTableQuery = 
-    `
-        CREATE TABLE IF NOT EXISTS RentPayment(
-            ReferenceID varchar(20) PRIMARY KEY,
-            RentPaid int NOT NULL,
-            ElectricityBillPaid int NOT NULL,
-            DateofPayment date NOT NULL
-        );
-    `
-
 
 const createShop_PerformanceTableQuery = 
     `
@@ -222,12 +212,15 @@ const createPayment_DetailsTableQuery =
         CREATE TABLE IF NOT EXISTS Payment_Details(
             ShopID varchar(20),
             ShopKeeperID varchar(20),
-            ReferenceID varchar(20),
+            RentReferenceID varchar(20),
+            BillReferenceID varchar(20),
+            RentPaid int NOT NULL,
+            ElectricityBillPaid int NOT NULL,
+            DateofVerification date NOT NULL,
             Payment_Status varchar(10) NOT NULL,
             CONSTRAINT Payment_Details_fk1 FOREIGN KEY (ShopID) references Shop(ShopID),
             CONSTRAINT Payment_Details_fk2 FOREIGN KEY (ShopKeeperID) references ShopKeeper(ShopKeeperID),
-            CONSTRAINT Payment_Details_fk3 FOREIGN KEY (ReferenceID) references RentPayment(ReferenceID),
-            PRIMARY KEY (ShopID, ShopKeeperID, ReferenceID)
+            PRIMARY KEY (ShopID, ShopKeeperID)
         );
     `    
     
@@ -313,7 +306,6 @@ const queries = [
     createShopTableQuery,
     createShopKeeperTableQuery,
     createShopFeedbackTableQuery,
-    createRentPaymentTableQuery,
     createShop_PerformanceTableQuery,
     createFeedback_userTableQuery,
     createTender_DetailsTableQuery,

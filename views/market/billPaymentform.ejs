@@ -30,47 +30,47 @@
 	<div class="container">
 		<img src="https://cesc.co.in/ptrlineins/imags/Security-Deposit-Bill.png"
 			class="center" height="150" alt="Logo">
-		<h1 id="mainHeading">Shop Renting Form</h1>
+		<h1 id="mainHeading">Bill Verification Form</h1>
 		<form action="/market/billPayment" method="post">
 			<div class="row1">
 				<div class="column1">
 					<div>
-						<label for="exampleFormControlInput1">Shop ID</label>
-						<input type="text" class="form-control disable"
-							id="exampleFormControlInput1" value="" name=shopid">
+						<label for="input1">Shop ID</label>
+						<input type="text" class="form-control"
+							id="input1" placeholder="Enter your ShopID" name="ShopID" autofocus required>
 					</div>
 					<br>
 					<div class="form-group">
-						<label for="input1">Reference ID</label>
-						<input type="text" id="input1" name="referenceid" class="form-control"
-							placeholder="Enter the your reference ID" autofocus required>
+						<label for="input2">Rent Reference ID</label>
+						<input type="text" id="input2" name="RentReferenceID" class="form-control"
+							placeholder="Enter the your Rent reference ID" required>
 					</div>
 					<br>
 					<div class="form-group">
-						<label for="input2">Amount of Electricity Bill Paid (in &#x20B9)</label>
-						<input type="text" id="input2" name="ebp" class="form-control"
-							placeholder="Enter the Amount of Electricity Bill" required>
+						<label for="input3">Amount of Rent Paid (in &#x20B9)</label>
+						<input type="text" name="RentPaid" id="input3" class="form-control"
+							placeholder="Enter the Amount of Electricity Bill"
+							required>
 					</div>
 				</div>
 				<div class="column1">
 					<div>
-						<label for="exampleFormControlInput2">ShopKeeper ID</label>
-						<input type="text" class="form-control disable"
-							id="exampleFormControlInput2" value="" name="shopkeeperid">
+						<label for="input4">ShopKeeper ID</label>
+						<input type="text" class="form-control" placeholder="Enter your ID"
+							id="input4" name="ShopKeeperID">
 					</div>
 					<br>
 					<div class="form-group">
-						<label for="input3">Name</label>
-						<input type="text" id="input3" name="name" class="form-control"
+						<label for="input5">Bill Reference ID</label>
+						<input type="text" id="input5" name="BillReferenceID" class="form-control"
 							placeholder="Enter your name" required>
 					</div>
 
 					<br>
 					<div class="form-group">
-						<label for="input4">Amount of Rent Paid (in &#x20B9)</label>
-						<input type="text" name="rp" id="input4" class="form-control"
-							placeholder="Enter the Amount of Electricity Bill"
-							required>
+						<label for="input6">Amount of Electricity Bill Paid (in &#x20B9)</label>
+						<input type="text" id="input6" name="ElectricityBillPaid" class="form-control"
+							placeholder="Enter the Amount of Electricity Bill" required>
 					</div>
 				</div>
 			</div>
