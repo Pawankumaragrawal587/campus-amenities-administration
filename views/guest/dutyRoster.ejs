@@ -1,0 +1,55 @@
+<%- include ('../partials/header') %>
+
+<h1 class="center">Duty Roster</h1>
+<div class="container">
+    <form class="row g-3 justify-content-center" action="/guest/dutyRoster" method="POST">
+        <div class="col-auto">
+            <label for="exampleFormControlInput1">Day</label>
+        </div>
+        <div class="col-auto">
+            <select id="exampleFormControlInput1" class="form-select" name="Day">
+                <option value="1" <%if(Day==1){%> selected <%}%>>Monday</option>
+                <option value="2" <%if(Day==2){%> selected <%}%>>Tuesday</option>
+                <option value="3" <%if(Day==3){%> selected <%}%>>Wednesday</option>
+                <option value="4" <%if(Day==4){%> selected <%}%>>Thursday</option>
+                <option value="5" <%if(Day==5){%> selected <%}%>>Friday</option>
+                <option value="6" <%if(Day==6){%> selected <%}%>>Saturday</option>
+                <option value="7" <%if(Day==7){%> selected <%}%>>Sunday</option>
+            </select>
+        </div>
+        <div class="col-auto">
+            <label for="exampleFormControlInput1">TimeSlot</label>
+        </div>
+        <div class="col-auto">
+            <select id="exampleFormControlInput1" class="form-select" name="TimeSlot">
+                <option value="Morning" <%if(TimeSlot=="Morning"){%> selected <%}%>>Morning</option>
+                <option value="Evening" <%if(TimeSlot=="Evening"){%> selected <%}%>>Evening</option>
+            </select>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary mb-3">View Staff</button>
+        </div>
+    </form>
+    <%if(!Day || !TimeSlot) {%>
+        <h2 class="center">Select Day And TimeSlot and view Scheduled Staff</h2>
+    <%} else {%>
+        <h2 class="center">Scheduled Staff</h2>
+    <%}%>
+    <%staffs.forEach(function(staff){%>
+        <div class="card mtp">
+            <div class="card-header">
+                <span>StaffID: <%=staff.StaffID%></span>
+                <span style="margin-left: 20px;">StaffType: <%=staff.StaffType%></span>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">Name: <%=staff.Name%></div>
+                    <div class="col-md-4">Job: <%=staff.JobTitle%></div>
+                    <div class="col-md-4">MobileNo: <%=staff.Mobile%></div>
+                </div>
+            </div>
+        </div>
+    <%})%>
+</div>
+
+<%- include ('../partials/footer') %>
