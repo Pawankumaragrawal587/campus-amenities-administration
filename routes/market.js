@@ -8,6 +8,16 @@ router.get('/market',function(req,res){
     res.render("market/index");
 });
 
+router.get('/market/availableShops', function(req,res){
+    mysqlConnection.query(mysqlQueriesMarket.selectAvailableShops(), function(err,result){
+        if(err) {
+            console.log(err);
+        } else {
+            res.render('market/shopRenting', {shops:result});
+        }
+    });
+});
+
 router.get('/market/shopBooking',function(req,res){
     res.render("market/shopBooking", {shopData:req.query});
 });
@@ -95,30 +105,6 @@ router.get('/market/activeShops', function(req,res){
     })
 });
 
-router.get('/market/shopKeeperDetails', function(req,res){
-    mysqlConnection.query(mysqlQueriesMarket.selectShopKeeperinfo(), function(err,results){
-      if(err){
-        console.log(err);
-        res.redirect('/market');
-      }else{
-        res.render("market/shopKeeperDetails", {shopkeeper: results});
-      }
-        
-    })
-});
-
-router.get('/market/shopRentingRequests',function(req,res){
-    res.render("market/shopRentingRequests");
-});
-
-router.get('/market/billPaymentform',function(req,res){
-    res.render("market/billPaymentform");
-});
-
-router.get('/market/billPaymentRequests',function(req,res){
-    res.render("market/billPaymentRequests");
-});
-
 router.get('/market/feedbackform', middlewareObj.isLoggedIn, function(req,res){
     mysqlConnection.query(mysqlQueriesMarket.selectShopKeeper(req.query), function(err,result){
         if(err || result.length===0) {
@@ -173,14 +159,28 @@ router.post('/market/feedbackform', middlewareObj.isLoggedIn, function(req,res){
     });
 });
 
-router.get('/market/availableShops', function(req,res){
-    mysqlConnection.query(mysqlQueriesMarket.selectAvailableShops(), function(err,result){
-        if(err) {
-            console.log(err);
-        } else {
-            res.render('market/shopRenting', {shops:result});
-        }
-    });
+router.get('/market/shopKeeperDetails', function(req,res){
+    mysqlConnection.query(mysqlQueriesMarket.selectShopKeeperinfo(), function(err,results){
+      if(err){
+        console.log(err);
+        res.redirect('/market');
+      }else{
+        res.render("market/shopKeeperDetails", {shopkeeper: results});
+      }
+        
+    })
+});
+
+router.get('/market/billPaymentform',function(req,res){
+    res.render("market/billPaymentform");
+});
+
+router.post('/market/billPaymentform', function(req,res){
+
+});
+
+router.get('/market/billPaymentRequests',function(req,res){
+    res.render("market/billPaymentRequests");
 });
 
 module.exports = router;

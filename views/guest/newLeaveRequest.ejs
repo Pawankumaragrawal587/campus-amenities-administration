@@ -1,0 +1,47 @@
+<%- include ('../partials/header') %>
+
+<h1 class="center">Submit Leave Request</h1>
+<div class="container">
+    <form class="row g-3 justify-content-center" action="/guest/leaveRequests" method="POST">
+        <div class="row align-items-center">
+            <div class="col-md-3">
+                <label for="exampleFormControlInput2">StaffID</label>
+                <input type="text" class="form-control" id="exampleFormControlInput2" value="<%=user.CollegeID.substring(3,req.user.CollegeID.length)%>" name="StaffID">
+            </div>
+            <div class="col-md-3">
+                <label for="exampleFormControlInput1">Date</label>
+                <input type="date" class="form-control" id="exampleFormControlInput1" name="LeaveDate">
+            </div>
+            <div class="col-md-3">
+                <label for="Select" class="form-label">Type</label>
+                <select id="Select" class="form-select" name="Day">
+                    <option value="1">Monday</option>
+                    <option value="2">Tuesday</option>
+                    <option value="3">Wednesday</option>
+                    <option value="4">Thursday</option>
+                    <option value="5">Friday</option>
+                    <option value="6">Saturday</option>
+                    <option value="7">Sunday</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="exampleFormControlInput1">TimeSlot</label>
+                <select id="exampleFormControlInput1" class="form-select" name="TimeSlot">
+                    <option value="Morning">Morning</option>
+                    <option value="Evening">Evening</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="mb-3">
+                <label for="exampleFormControlTextarea1" class="form-label">Reason</label>
+                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="Reason" required></textarea>
+            </div>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary mb-3">Submit</button>
+        </div>
+    </form>
+</div>
+
+<%- include ('../partials/footer') %>

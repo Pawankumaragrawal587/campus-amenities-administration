@@ -234,6 +234,15 @@ queryObj.selectScheduledStaff = function(params) {
     return mysqlQuery;
 }
 
+queryObj.selectAvailableStaff = function(params) {
+    const mysqlQuery = 
+        `
+            SELECT * FROM Staff
+            WHERE Staff.StaffID NOT IN (SELECT StaffID FROM Staff_Duty WHERE Staff_Duty.DutyID="${params.DutyID}");
+        `
+    return mysqlQuery;
+}
+
 //================================================
 //              Insert Queries
 //================================================

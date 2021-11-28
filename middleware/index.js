@@ -33,6 +33,34 @@ middlewareObj.isAdmin = function(req,res,next){
     }
 };
 
+middlewareObj.isStaff = function(req,res,next) {
+    if(req.isAuthenticated()){
+        if(req.user.UserType === "Staff") {
+            return next();
+        } else {
+            req.flash('error','Permission denied!');
+            res.redirect('back');
+        }
+    } else {
+        req.flash('error','Please Login first!');
+        res.redirect('/login');
+    }
+}
+
+middlewareObj.canSubmitLeaveRequests = function(req,res,next) {
+    if(req.isAuthenticated()){
+        if(req.user.UserType === "Staff" && req.body.StaffID == req.user.CollegeID.substring(3,req.user.CollegeID.length)) {
+            return next();
+        } else {
+            req.flash('error','Permission denied!');
+            res.redirect('back');
+        }
+    } else {
+        req.flash('error','Please Login first!');
+        res.redirect('/login');
+    }
+}
+
 middlewareObj.isInvoiceOwner = function(req,res,next) {
     if(req.isAuthenticated()) {
         req.params.CollegeID = req.user.CollegeID;

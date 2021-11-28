@@ -483,4 +483,20 @@ router.post('/guest/dutyRoster', function(req,res){
     res.redirect('/guest/dutyRoster?' + reqBody);
 });
 
+router.get('/guest/leaveRequests/new', middlewareObj.isStaff, function(req,res){
+    res.render('guest/newLeaveRequest');
+});
+
+router.post('/guest/leaveRequests', middlewareObj.canSubmitLeaveRequests, function(req,res){
+    
+});
+
+router.get('/guest/leaveRequests', middlewareObj.isAdmin, function(req,res){
+    
+});
+
+router.get('/guest/leaveRequests/:Status/:RequestID', middlewareObj.isAdmin, function(req,res){
+    
+});
+
 module.exports = router;
