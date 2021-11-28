@@ -115,7 +115,7 @@ const createProcedureInsertGardenerQuery =
             SELECT COUNT(*) INTO num FROM Gardener;
             IF num=0 THEN
                 insertionLoop: LOOP
-                    IF num>=20 THEN 
+                    IF num>=30 THEN 
                         LEAVE insertionLoop;
                     END IF;
                     INSERT INTO Gardener VALUES (CONCAT("G", num+1), CONCAT("Gardener_Name", num+1),CONCAT("GPhone",num+1),CONCAT("GardenerAddress_", num+1),FLOOR(RAND()*(100000-10000+1))+10000);
@@ -132,7 +132,7 @@ const createProcedureInsertEquipmentQuery =
             SELECT COUNT(*) INTO num FROM Equipment;
             IF num=0 THEN
                 insertionLoop: LOOP
-                    IF num>=10 THEN 
+                    IF num>=15 THEN 
                         LEAVE insertionLoop;
                     END IF;
                     INSERT INTO Equipment VALUES (CONCAT("E", num+1), CONCAT("EquipmentName_", num+1),FLOOR(RAND()*(10000-100+1))+100);
