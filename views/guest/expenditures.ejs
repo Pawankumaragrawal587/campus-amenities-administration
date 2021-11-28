@@ -1,0 +1,24 @@
+<%- include ('../partials/header') %>
+
+<div class="container">
+
+    <div>
+        <% expenditures.forEach(function(expenditure){ %>
+            <div class="card mtp">
+                <div class="card-header">
+                    ExpenditureID: <%=expenditure.ExpenditureID%>
+                </div>
+                <div class="card-body">
+                    <div>Date: <%= expenditure.Date.toISOString().slice(0, 10) %></div>
+                    <div>Amount: <%= expenditure.Amount %></div>
+                    <div>
+                        <h5>Description:</h5>
+                        <p><%=expenditure.Description%></p>
+                    </div>
+                </div>
+            </div>
+        <% }); %>
+    </div>
+</div>
+
+<%- include ('../partials/footer') %>
