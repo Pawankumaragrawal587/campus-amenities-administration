@@ -191,6 +191,14 @@ queryObj.selectUser_FoodBooking = function(params) {
     return mysqlQuery;
 }
 
+queryObj.selectExpenditure = function() {
+    const mysqlQuery = 
+        `
+            SELECT * FROM Expenditure;
+        `
+    return mysqlQuery;
+}
+
 //================================================
 //              Insert Queries
 //================================================
@@ -281,6 +289,15 @@ queryObj.insertFoodBooking_Bill = function(params) {
         `
             INSERT INTO FoodBooking_Bill
             VALUES (${params.BookingID}, ${params.InvoiceNumber});
+        `
+    return mysqlQuery;
+}
+
+queryObj.insertExpenditure = function(params) {
+    const mysqlQuery =
+        `
+            INSERT INTO Expenditure
+            VALUES ("${params.ExpenditureID}", "${params.Description}", "${params.Amount}", "${params.Date}")
         `
     return mysqlQuery;
 }

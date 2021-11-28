@@ -357,11 +357,41 @@ router.get('/guest/booking/food/:status/:bookingId', middlewareObj.isAdmin, func
 //===================================================
 
 router.get('/guest/expenditures', middlewareObj.isAdmin, function(req,res){
-    
+    mysqlConnection.query(mysqlQueriesGuest.selectExpenditure(), function(err,result){
+        if(err) {
+            console.log(err);
+            req.flash('error', 'Something Went Wrong!');
+            res.redirect('back');
+        } else {
+            res.render('guest/expenditures', {expenditures:result});
+        }
+    })
 });
 
 router.get('/guest/expenditures/new', middlewareObj.isAdmin, function(req,res){
     res.render('guest/newExpenditure');
+});
+
+router.post('/guest/expenditures/new', middlewareObj.isAdmin, function(req,res){
+    mysqlConnection.query('SELECT GetID("Expenditure") as ExpenditureID;', function(err,result){
+        if(err) {
+            console.log(err);
+            req.flash('error', 'Something Went Wrong!');
+            res.redirect('back');
+        } else {
+            req.body.ExpenditureID = result[0].ExpenditureID;
+            mysqlConnection.query(mysqlQueriesGuest.insertExpenditure(req.body), function(err,result){
+                if(err) {
+                    console.log(err);
+                    req.flash('error', 'Something Went Wrong!');
+                    res.redirect('back');
+                } else {
+                    req.flash('success', 'Expenditure Added Successfully!');
+                    res.redirect('/guest');
+                }
+            });
+        }
+    })
 });
 
 module.exports = router;
