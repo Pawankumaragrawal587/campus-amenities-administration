@@ -354,7 +354,7 @@ const createUserTableQuery =
     `
         CREATE TABLE IF NOT EXISTS User(
             CollegeID varchar(20) PRIMARY KEY,
-            UserType varchar(10) NOT NULL CHECK (UserType IN ("Admin", "Staff", "Student")),
+            UserType varchar(10) NOT NULL CHECK (UserType IN ("Admin", "Staff", "Student", "Gardener")),
             Name varchar(50) NOT NULL,
             Webmail varchar(50) NOT NULL UNIQUE,
             Password varchar(50) NOT NULL
@@ -646,6 +646,17 @@ const createProcedureInsertUserQuery =
                     SET num = num + 1;
                 END LOOP;
                 UPDATE User SET Name="Pawan Kumar Agrawal", Webmail="Pawan_1901CS40@iitp.ac.in" WHERE CollegeID="1901CS40";
+            END IF;
+            SET num=0;
+            SELECT COUNT(*) INTO num FROM User WHERE UserType="Gardener";
+            IF num=0 THEN
+                insertionLoop: LOOP
+                    IF num>= 30 THEN 
+                        LEAVE insertionLoop;
+                    END IF;
+                    INSERT INTO User VALUES (CONCAT("G", num+1), "Gardener", CONCAT("Gardener_NAME", num+1), CONCAT(CONCAT("Gardener_NAME", num+1), "_", CONCAT("G", num+1), "@iitp.ac.in"), LEFT(MD5(RAND()), 10));
+                    SET num = num + 1;
+                END LOOP;
             END IF;
         END;
     `

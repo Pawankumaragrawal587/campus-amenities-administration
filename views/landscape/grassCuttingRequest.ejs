@@ -1,0 +1,40 @@
+<%- include ('../partials/header') %>
+
+<div class="container">
+    <%if(requests.length===0) {%>
+        <h2 class="center">No More Pending Requests are Present.</h2>
+    <%}%>
+    <%requests.forEach(function(request){%>
+        <div class="card mtp">
+            <div class="card-header">GrassCuttingRequestID: <%=request.GrassCuttingRequestID%></div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        Name: <%=request.Name%>
+                    </div>
+                    <div class="col-md-4">
+                        UserType: <%=request.UserType%>
+                    </div>
+                    <div class="col-md-4">
+                        CollegeID: <%=request.CollegeID%>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        Date: <%=request.Date.toString().slice(0, 33)%>
+                    </div>
+                    <div class="col-md-4">
+                        Address : <%=request.Address%>
+                    </div>
+                    <div class="col-md-4">
+                        Comments: <%=request.Comments%>
+                    </div>
+                </div>
+                <a class="btn btn-success btn-sm" href="/landscape/grassCuttingRequest/Approved/<%=request.GrassCuttingRequestID%>">Approve</a>
+                <a class="btn btn-danger btn-sm" href="/landscape/grassCuttingRequest/Rejected/<%=request.GrassCuttingRequestID%>">Reject</a>
+            </div>
+        </div>
+    <%});%>
+</div>
+
+<%- include ('../partials/footer') %>

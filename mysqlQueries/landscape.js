@@ -1,6 +1,63 @@
+const { query } = require('express');
 const mysqlConnection = require('../mysqlQueries/mysqlConnection.js');
 
 var queryObj = {};
+
+//================================================
+//             Select Queries
+//================================================
+
+queryObj.selectCampusArea = function() {
+    const mysqlQuery = 
+        `
+            SELECT * FROM CampusArea;
+        `
+    return mysqlQuery;
+}
+
+queryObj.selectPendingGrassCuttingRequests = function() {
+    const mysqlQuery = 
+        `
+            SELECT * FROM GrassCuttingRequest
+            NATURAL JOIN GrassCuttingRequest_User 
+            NATURAL JOIN User
+            NATURAL JOIN CampusArea
+            WHERE Status="Pending";
+        `
+    return mysqlQuery;
+}
+
+queryObj.updateGrassCuttingRequestStatus = function(params) {
+    const mysqlQuery = 
+        `
+            UPDATE GrassCuttingRequest
+            SET Status="${params.Status}"
+            WHERE GrassCuttingRequestID="${params.GrassCuttingRequestID}";
+        `
+    return mysqlQuery;
+}
+
+//================================================
+//             Insert Queries
+//================================================
+
+queryObj.insertGrassCuttingRequest = function(params) {
+    const mysqlQuery = 
+        `
+            INSERT INTO GrassCuttingRequest(GrassCuttingRequestID, Date, AID, Comments, Status)
+            VALUES ("${params.GrassCuttingRequestID}", "${params.Date}", "${params.AID}", "${params.Comments}", "${params.Status}");
+        `
+    return mysqlQuery;
+}
+
+queryObj.insertGrassCuttingRequest_User = function(params) {
+    const mysqlQuery = 
+        `
+            INSERT INTO GrassCuttingRequest_User
+            VALUES ("${params.GrassCuttingRequestID}", "${params.CollegeID}");
+        `
+    return mysqlQuery;
+}
 
 //================================================
 //             Create Table Queries
@@ -60,17 +117,17 @@ const createGrassCuttingRequestTableQuery =
             CONSTRAINT GrassCuttingRequest_fk2 FOREIGN KEY (AID) references CampusArea(AID)
         );
     `
-const createGardener_UserTableQuery = 
-    `
-        CREATE TABLE IF NOT EXISTS Gardener_User(
-            GID varchar(10) ,
-            CollegeID varchar(10),
-            CONSTRAINT Gardener_User_fk1 FOREIGN KEY (GID) references Gardener(GID),
-            CONSTRAINT Gardener_User_fk2 FOREIGN KEY (CollegeID) references User(CollegeID).
-            PRIMARY KEY(GID,CollegeID)
+// const createGardener_UserTableQuery = 
+//     `
+//         CREATE TABLE IF NOT EXISTS Gardener_User(
+//             GID varchar(10) ,
+//             CollegeID varchar(10),
+//             CONSTRAINT Gardener_User_fk1 FOREIGN KEY (GID) references Gardener(GID),
+//             CONSTRAINT Gardener_User_fk2 FOREIGN KEY (CollegeID) references User(CollegeID),
+//             PRIMARY KEY(GID,CollegeID)
             
-        );
-    `
+//         );
+//     `
 const createGardener_CampusAreaTableQuery = 
     `
         CREATE TABLE IF NOT EXISTS Gardener_CampusArea(
@@ -103,6 +160,18 @@ const createGardener_GrassCuttingRequestTableQuery =
             
         );
     `
+
+const createGrassCuttingRequest_UserTableQuery = 
+    `
+        CREATE TABLE IF NOT EXISTS GrassCuttingRequest_User(
+            GrassCuttingRequestID varchar(10),
+            CollegeID varchar(10),
+            CONSTRAINT GrassCuttingRequest_User_fk1 FOREIGN KEY (GrassCuttingRequestID) references GrassCuttingRequest(GrassCuttingRequestID),
+            CONSTRAINT GrassCuttingRequest_User_fk2 FOREIGN KEY (CollegeID) references User(CollegeID),
+            PRIMARY KEY(GrassCuttingRequestID,CollegeID)
+        );
+    `
+    
 //================================================
 //            Create Procedure Queries
 //================================================
@@ -168,10 +237,10 @@ const queries = [
     createCampusAreaTableQuery,
     createMaintainanceRequestTableQuery,
     createGrassCuttingRequestTableQuery,
-    createGardener_UserTableQuery,
     createGardener_CampusAreaTableQuery,
     createGardener_EquipmentTableQuery,
     createGardener_GrassCuttingRequestTableQuery,
+    createGrassCuttingRequest_UserTableQuery,
     'DROP PROCEDURE IF EXISTS InsertGardener;',
     createProcedureInsertGardenerQuery,
     'CALL InsertGardener();',
