@@ -223,6 +223,17 @@ queryObj.getMonthlyFoodBookings = function(params) {
     return mysqlQuery;
 }
 
+queryObj.selectScheduledStaff = function(params) {
+    const mysqlQuery = 
+        `
+            SELECT * FROM Duty
+            NATURAL JOIN Staff_Duty
+            NATURAL JOIN Staff
+            WHERE Duty.Day=${params.Day} and Duty.TimeSlot="${params.TimeSlot}";
+        `
+    return mysqlQuery;
+}
+
 //================================================
 //              Insert Queries
 //================================================
@@ -422,6 +433,28 @@ const createExpenditureTableQuery =
         );
     `
 
+const createStaffTableQuery = 
+    `
+        CREATE TABLE IF NOT EXISTS Staff(
+            StaffID int Primary Key,
+            Name varchar(30) NOT NULL,
+            Age int NOT NULL,
+            Email varchar(30) NOT NULL,
+            Mobile char(10) NOT NULL,
+            StaffType varchar(10) CHECK (StaffType IN ('Regular', 'Contract')),
+            JobTitle varchar(20) CHECK (JobTitle IN ('HouseKeeper', 'Receptionist', 'Security', 'Cook'))
+        );
+    `
+
+const createDutyTableQuery = 
+    `
+        CREATE TABLE IF NOT EXISTS Duty(
+            DutyID int Primary Key,
+            Day int CHECK (Day IN (1,2,3,4,5,6,7)), 
+            TimeSlot varchar(10) CHECK (TimeSlot IN ('Morning', 'Evening'))
+        );
+    `
+
 const createIDGeneratorTableQuery = 
     `
         CREATE TABLE IF NOT EXISTS IDGenerator(
@@ -515,6 +548,17 @@ const createFoodBooking_BillTableQuery =
             CONSTRAINT FoodBooking_Bill_fk1 FOREIGN KEY (BookingID) references FoodBooking(BookingID),
             CONSTRAINT FoodBooking_Bill_fk2 FOREIGN KEY (InvoiceNumber) references Bill(InvoiceNumber),
             PRIMARY KEY (BookingID, InvoiceNumber)
+        );
+    `
+
+const createStaff_DutyTableQuery = 
+    `
+        CREATE TABLE IF NOT EXISTS Staff_Duty(
+            StaffID int,
+            DutyID int,
+            CONSTRAINT Staff_Duty_fk1 FOREIGN KEY (StaffID) references Staff(StaffID),
+            CONSTRAINT Staff_Duty_fk2 FOREIGN KEY (DutyID) references Duty(DutyID),
+            PRIMARY KEY (StaffID, DutyID)
         );
     `
 
@@ -612,6 +656,101 @@ const createInsertBookingRelationsProcedure =
         END
     `
 
+const createInsertDutiesProcedure = 
+    `
+        CREATE PROCEDURE InsertDuties()
+        BEGIN
+            DECLARE num int default 0;
+            SELECT COUNT(*) INTO num FROM Duty;
+            IF num=0 THEN
+                SET num = num + 1;
+                insertionLoop: LOOP
+                    IF num<=7 THEN 
+                        INSERT INTO Duty VALUES (num, num, 'Morning');
+                    ELSEIF num<=14 THEN 
+                        INSERT INTO Duty VALUES (num, num-7, 'Evening');
+                    ELSE
+                        LEAVE insertionLoop;
+                    END IF;
+                    SET num = num + 1;
+                END LOOP;
+            END IF;
+        END
+    `
+
+const createInsertStaffsProcedure = 
+    `
+        CREATE PROCEDURE InsertStaffs()
+        BEGIN
+            DECLARE num int default 0;
+            SELECT COUNT(*) INTO num FROM Staff;
+            IF num=0 THEN
+                SET num = num + 1;
+                insertionLoop: LOOP
+                    IF num<=6 THEN
+                        INSERT INTO Staff VALUES (num, CONCAT("STAFF_NAME", num), 40, CONCAT("STAFF_NAME", num, "@iitp.ac.in"), "1111111111", "Regular", "HouseKeeper");
+                    ELSEIF num<=12 THEN 
+                        INSERT INTO Staff VALUES (num, CONCAT("STAFF_NAME", num), 40, CONCAT("STAFF_NAME", num, "@iitp.ac.in"), "1111111111", "Regular", "Receptionist");
+                    ELSEIF num<=18 THEN 
+                        INSERT INTO Staff VALUES (num, CONCAT("STAFF_NAME", num), 40, CONCAT("STAFF_NAME", num, "@iitp.ac.in"), "1111111111", "Contract", "Security");
+                    ELSEIF num<=24 THEN 
+                        INSERT INTO Staff VALUES (num, CONCAT("STAFF_NAME", num), 40, CONCAT("STAFF_NAME", num, "@iitp.ac.in"), "1111111111", "Contract", "Cook");
+                    ELSE
+                        LEAVE insertionLoop;
+                    END IF;
+                    SET num = num + 1;
+                END LOOP;
+            END IF;
+        END
+    `
+
+const createStaffDutyScheduler = 
+    `
+        CREATE PROCEDURE StaffDutyScheduler()
+        BEGIN
+            DECLARE num int default 0;
+            CALL InsertDuties();
+            CALL InsertStaffs();
+            SELECT COUNT(*) INTO num FROM Staff_Duty;
+            IF num=0 THEN
+                SET num=1;
+                insertionLoop: LOOP
+                    IF num<=5 THEN
+                        INSERT INTO Staff_Duty VALUES (1, num);
+                        INSERT INTO Staff_Duty VALUES (4, num);
+                        INSERT INTO Staff_Duty VALUES (7, num);
+                        INSERT INTO Staff_Duty VALUES (10, num);
+                        INSERT INTO Staff_Duty VALUES (13, num);
+                        INSERT INTO Staff_Duty VALUES (16, num);
+                        INSERT INTO Staff_Duty VALUES (19, num);
+                        INSERT INTO Staff_Duty VALUES (22, num);
+                    ELSEIF num<=10 THEN 
+                        INSERT INTO Staff_Duty VALUES (2, num);
+                        INSERT INTO Staff_Duty VALUES (5, num);
+                        INSERT INTO Staff_Duty VALUES (8, num);
+                        INSERT INTO Staff_Duty VALUES (11, num);
+                        INSERT INTO Staff_Duty VALUES (14, num);
+                        INSERT INTO Staff_Duty VALUES (17, num);
+                        INSERT INTO Staff_Duty VALUES (20, num);
+                        INSERT INTO Staff_Duty VALUES (23, num);
+                    ELSEIF num<=14 THEN
+                        INSERT INTO Staff_Duty VALUES (3, num);
+                        INSERT INTO Staff_Duty VALUES (6, num);
+                        INSERT INTO Staff_Duty VALUES (9, num);
+                        INSERT INTO Staff_Duty VALUES (12, num);
+                        INSERT INTO Staff_Duty VALUES (15, num);
+                        INSERT INTO Staff_Duty VALUES (18, num);
+                        INSERT INTO Staff_Duty VALUES (21, num);
+                        INSERT INTO Staff_Duty VALUES (24, num);
+                    ELSE
+                        LEAVE insertionLoop;
+                    END IF;
+                    SET num = num + 1;
+                END LOOP;
+            END IF;
+        END
+    `
+
 //================================================
 //              Functions
 //================================================
@@ -647,6 +786,8 @@ const queries = [
     createFoodOrdersTableQuery,
     createBillTableQuery,
     createExpenditureTableQuery,
+    createStaffTableQuery,
+    createDutyTableQuery,
     createIDGeneratorTableQuery,
     createUser_BookingTableQuery,
     createRoom_BookingTableQuery,
@@ -656,6 +797,7 @@ const queries = [
     createUser_BillTableQuery,
     createRoomBooking_BillTableQuery,
     createFoodBooking_BillTableQuery,
+    createStaff_DutyTableQuery,
     'DROP PROCEDURE IF EXISTS InsertRoom;',
     createProcedureInsertRoomQuery,
     'CALL InsertRoom();',
@@ -665,7 +807,14 @@ const queries = [
     'DROP PROCEDURE IF EXISTS InsertBookingRelations',
     createInsertBookingRelationsProcedure,
     'DROP FUNCTION IF EXISTS GetID',
-    createGetIDFunction
+    createGetIDFunction,
+    'DROP PROCEDURE IF EXISTS InsertDuties;',
+    createInsertDutiesProcedure,
+    'DROP PROCEDURE IF EXISTS InsertStaffs;',
+    createInsertStaffsProcedure,
+    'DROP PROCEDURE IF EXISTS StaffDutyScheduler;',
+    createStaffDutyScheduler,
+    'CALL StaffDutyScheduler()'
 ]
 
 function executeQueries(queryNum) {

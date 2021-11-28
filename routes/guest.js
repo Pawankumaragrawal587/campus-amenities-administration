@@ -458,4 +458,29 @@ router.post('/guest/monthlyBookings/food', middlewareObj.isLoggedIn, function(re
     res.redirect('/guest/monthlyBookings/food?' + reqBody);
 });
 
+//===================================================
+//              Staff Duty Scheduler
+//===================================================
+
+router.get('/guest/dutyRoster',function(req,res){
+    if(!req.query.Day || !req.query.TimeSlot) {
+        res.render('guest/dutyRoster', {Day:false, TimeSlot:false, staffs:[]});
+    } else {
+        mysqlConnection.query(mysqlQueriesGuest.selectScheduledStaff(req.query), function(err,result){
+            if(err) {
+                console.log(err);
+                req.flash('Something Went Wrong!');
+                res.redirect('/guest');
+            } else {
+                res.render('guest/dutyRoster', {Day:req.query.Day, TimeSlot:req.query.TimeSlot, staffs:result});
+            }
+        })
+    }
+});
+
+router.post('/guest/dutyRoster', function(req,res){
+    const reqBody = new URLSearchParams(req.body).toString();
+    res.redirect('/guest/dutyRoster?' + reqBody);
+});
+
 module.exports = router;
