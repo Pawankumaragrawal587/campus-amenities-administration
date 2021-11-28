@@ -1,4 +1,6 @@
 <%- include ('../partials/header') %>
+ 
+
 
 <style>
 
@@ -42,7 +44,7 @@
       margin-top: 2px;
       background-color: #696969;
     }
-    
+
 </style>
     
     
@@ -59,7 +61,8 @@
                         <p4>Located near <%= shop.Location %> </p4>
                     </div>
                     <div class="figure-caption">
-                        <p4>Rating: <%= shop.Avg_Rating %> </p4>
+                        <p4>Rating: <%= Number((shop.Avg_Rating).toFixed(1)) %>/5 </p4>
+                    
                     </div>
                     <div class="placemoreinfobtn">
                         <a href="/market/feedbackform?ShopKeeperID=<%=shop.ShopKeeperID%>&ShopName=<%=shop.ShopName%>&ShopID=<%=shop.ShopID%>" class="btn btn--block btn-secondary">Feedback</a>
@@ -69,5 +72,6 @@
         <%});%>
     </div>
 </div>
+
 
 <%- include ('../partials/footer') %>
