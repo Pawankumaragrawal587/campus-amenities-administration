@@ -199,6 +199,30 @@ queryObj.selectExpenditure = function() {
     return mysqlQuery;
 }
 
+queryObj.getMonthlyRoomBookings = function(params) {
+    const mysqlQuery = 
+        `
+            SELECT * FROM Booking
+            NATURAL JOIN Room_Booking
+            NATURAL JOIN Room
+            NATURAL JOIN User_Booking
+            WHERE Booking.Status="Approved" and EXTRACT(MONTH FROM BookingTime)="${params.Month}" and EXTRACT(YEAR FROM BookingTime)="${params.Year}"; 
+        `
+    return mysqlQuery;
+}
+
+queryObj.getMonthlyFoodBookings = function(params) {
+    const mysqlQuery = 
+        `
+            SELECT * FROM FoodBooking
+            NATURAL JOIN User_FoodBooking
+            NATURAL JOIN FoodOrders_FoodBooking
+            INNER JOIN FoodOrders ON FoodOrders.OrdersID=FoodOrders_FoodBooking.OrdersID
+            WHERE FoodBooking.Status="Approved" and EXTRACT(MONTH FROM BookingTime)="${params.Month}" and EXTRACT(YEAR FROM BookingTime)="${params.Year}"; 
+        `
+    return mysqlQuery;
+}
+
 //================================================
 //              Insert Queries
 //================================================

@@ -363,7 +363,11 @@ router.get('/guest/expenditures', middlewareObj.isAdmin, function(req,res){
             req.flash('error', 'Something Went Wrong!');
             res.redirect('back');
         } else {
-            res.render('guest/expenditures', {expenditures:result});
+            let totalExpenditure = 0;
+            result.forEach(function(obj){
+                totalExpenditure = totalExpenditure + obj.Amount;
+            });
+            res.render('guest/expenditures', {expenditures:result, totalExpenditure:totalExpenditure});
         }
     })
 });
@@ -392,6 +396,66 @@ router.post('/guest/expenditures/new', middlewareObj.isAdmin, function(req,res){
             });
         }
     })
+});
+
+//===================================================
+//              Monthly Bookings
+//===================================================
+
+router.get('/guest/monthlyBookings/room', middlewareObj.isLoggedIn, function(req,res){
+    if(!req.query.monthAndYear) {
+        res.render('guest/monthlyRoomBooking', {bookings:[], monthAndYear: false});
+    } else {
+        const d=new Date(req.query.monthAndYear);
+        req.query.Month = d.getMonth()+1;
+        req.query.Year = d.getFullYear();
+        mysqlConnection.query(mysqlQueriesGuest.getMonthlyRoomBookings(req.query), function(err,result){
+            if(err) {
+                req.flash('error', 'Something Went Wrong!');
+                console.log(err);
+                res.redirect('back');
+            } else {
+                let totalBookingAmount = 0;
+                result.forEach(function(obj){
+                    totalBookingAmount = totalBookingAmount + obj.Cost;
+                });
+                res.render('guest/monthlyRoomBooking', {bookings:result, monthAndYear:req.query.monthAndYear, totalBookingAmount:totalBookingAmount});
+            }
+        });
+    }
+});
+
+router.post('/guest/monthlyBookings/room', middlewareObj.isLoggedIn, function(req,res){
+    const reqBody = new URLSearchParams(req.body).toString();
+    res.redirect('/guest/monthlyBookings/room?' + reqBody);
+});
+
+router.get('/guest/monthlyBookings/food', middlewareObj.isLoggedIn, function(req,res){
+    if(!req.query.monthAndYear) {
+        res.render('guest/monthlyFoodBooking', {bookings:[], monthAndYear: false});
+    } else {
+        const d=new Date(req.query.monthAndYear);
+        req.query.Month = d.getMonth()+1;
+        req.query.Year = d.getFullYear();
+        mysqlConnection.query(mysqlQueriesGuest.getMonthlyFoodBookings(req.query), function(err,result){
+            if(err) {
+                req.flash('error', 'Something Went Wrong!');
+                console.log(err);
+                res.redirect('back');
+            } else {
+                let totalBookingAmount = 0;
+                result.forEach(function(obj){
+                    totalBookingAmount = totalBookingAmount + obj.Cost*obj.Quantity;
+                });
+                res.render('guest/monthlyFoodBooking', {bookings:result, monthAndYear:req.query.monthAndYear, totalBookingAmount:totalBookingAmount});
+            }
+        });
+    }
+});
+
+router.post('/guest/monthlyBookings/food', middlewareObj.isLoggedIn, function(req,res){
+    const reqBody = new URLSearchParams(req.body).toString();
+    res.redirect('/guest/monthlyBookings/food?' + reqBody);
 });
 
 module.exports = router;

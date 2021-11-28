@@ -1,7 +1,7 @@
 <%- include ('../partials/header') %>
 
 <div class="container">
-
+    <h3 class="center">Total Expenditure: ₹ <%=totalExpenditure%></h3>
     <div>
         <% expenditures.forEach(function(expenditure){ %>
             <div class="card mtp">
@@ -9,11 +9,13 @@
                     ExpenditureID: <%=expenditure.ExpenditureID%>
                 </div>
                 <div class="card-body">
-                    <div>Date: <%= expenditure.Date.toISOString().slice(0, 10) %></div>
-                    <div>Amount: <%= expenditure.Amount %></div>
+                    <span>Date: <%= expenditure.Date.toISOString().slice(0, 10) %></span>
+                    <span style="margin-left: 20px;">Amount: <%= expenditure.Amount %></span>
+                    <hr>
                     <div>
-                        <h5>Description:</h5>
-                        <p><%=expenditure.Description%></p>
+                        Description:
+                        <br>
+                        <%=expenditure.Description%>
                     </div>
                 </div>
             </div>
