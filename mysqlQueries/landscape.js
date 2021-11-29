@@ -259,7 +259,7 @@ const createProcedureInsertEquipmentQuery =
             SELECT COUNT(*) INTO num FROM Equipment;
             IF num=0 THEN
                 insertionLoop: LOOP
-                    IF num>=15 THEN 
+                    IF num>=10 THEN 
                         LEAVE insertionLoop;
                     END IF;
                     INSERT INTO Equipment VALUES (CONCAT("E", num+1), CONCAT("EquipmentName_", num+1),FLOOR(RAND()*(10000-100+1))+100);
@@ -271,23 +271,43 @@ const createProcedureInsertEquipmentQuery =
 
     
 const createProcedureInsertCampusAreaQuery = 
-`
-    CREATE PROCEDURE InsertCampusArea()
-    BEGIN
-        declare num int default 0;
-        SELECT COUNT(*) INTO num FROM CampusArea;
-        IF num=0 THEN
-            insertionLoop: LOOP
-                IF num>=5 THEN 
-                    LEAVE insertionLoop;
-                END IF;
-                INSERT INTO CampusArea VALUES (CONCAT("A", num+1), CONCAT("Address", num+1),CONCAT("Description_",num+1));
-                SET num = num + 1;
-            END LOOP;
-        END IF;
-    END;
-`
-
+    `
+        CREATE PROCEDURE InsertCampusArea()
+        BEGIN
+            declare num int default 0;
+            SELECT COUNT(*) INTO num FROM CampusArea;
+            IF num=0 THEN
+                insertionLoop: LOOP
+                    IF num>=5 THEN 
+                        LEAVE insertionLoop;
+                    END IF;
+                    INSERT INTO CampusArea VALUES (CONCAT("A", num+1), CONCAT("Address", num+1),CONCAT("Description_",num+1));
+                    SET num = num + 1;
+                END LOOP;
+            END IF;
+        END;
+    `
+const createProcedureInsertGardener_EquipmentQuery = 
+    `
+        CREATE PROCEDURE InsertGardener_Equipment()
+        BEGIN
+            declare num int default 0;
+            declare num2 int default 0;
+            SELECT COUNT(*) INTO num FROM Gardener_Equipment;
+            IF num=0 THEN
+                insertionLoop: LOOP
+                    IF num>=30 THEN 
+                        LEAVE insertionLoop;
+                    END IF;
+                    INSERT INTO Gardener_Equipment VALUES (CONCAT("G", num+1), CONCAT("E", num2+1));
+                    INSERT INTO Gardener_Equipment VALUES (CONCAT("G", num+2), CONCAT("E", num2+1));
+                    INSERT INTO Gardener_Equipment VALUES (CONCAT("G", num+3), CONCAT("E", num2+1)); 
+                    SET num2 = num2 + 1;
+                    SET num=num+3;
+                END LOOP;
+            END IF;
+        END;
+    `
 
 const queries = [
     createGardenerTableQuery,
@@ -308,7 +328,10 @@ const queries = [
     'CALL InsertEquipment();',
     'DROP PROCEDURE IF EXISTS InsertCampusArea;',
     createProcedureInsertCampusAreaQuery,
-    'CALL InsertCampusArea();'
+    'CALL InsertCampusArea();',
+    'DROP PROCEDURE IF EXISTS InsertGardener_Equipment;',
+    createProcedureInsertGardener_EquipmentQuery,
+    'CALL InsertGardener_Equipment();'
 ]
 
 function executeQueries(queryNum) {
