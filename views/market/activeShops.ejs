@@ -49,6 +49,10 @@
     
     
 <div class="container cc">
+    <% if(shops.length===0){ %><h1 class="center">
+        Currently No Active Shops are Present
+    </h1>
+    <%}%> 
     <div class="row">
         <%shops.forEach(function(shop){%>
             <div class="col-md-4">

@@ -144,7 +144,11 @@
         }
       </style>
       
-      <div class="center">
+  <div class="center">
+    <% if(shopkeeper.length===0){ %><h1 class="center">
+      No Shopkeeper Registered
+  </h1>
+  <%}%> 
 	<%shopkeeper.forEach(function(shopkeeper){%>
 		<div class="card">
 			<div class="additional">
