@@ -187,16 +187,6 @@ const createGardener_CampusAreaTableQuery =
             
         );
     `
-const createGardener_EquipmentTableQuery = 
-    `
-        CREATE TABLE IF NOT EXISTS Gardener_Equipment(
-            GID varchar(10) ,
-            EID varchar(10),
-            CONSTRAINT Gardener_Equipment_fk1 FOREIGN KEY (GID) references Gardener(GID),
-            CONSTRAINT Gardener_Equipment_fk2 FOREIGN KEY (EID) references Equipment(EID),
-            PRIMARY KEY(GID,EID)
-        );
-    `
 const createGardener_GrassCuttingRequestTableQuery = 
     `
         CREATE TABLE IF NOT EXISTS Gardener_GrassCuttingRequest(
@@ -287,23 +277,6 @@ const createProcedureInsertCampusAreaQuery =
             END IF;
         END;
     `
-const createProcedureInsertGardener_EquipmentQuery = 
-    `
-        CREATE PROCEDURE InsertGardener_Equipment()
-        BEGIN
-            declare num int default 0;
-            SELECT COUNT(*) INTO num FROM Gardener_Equipment;
-            IF num=0 THEN
-                insertionLoop: LOOP
-                    IF num>=10 THEN 
-                        LEAVE insertionLoop;
-                    END IF;
-                    INSERT INTO Gardener_Equipment VALUES (CONCAT("G", num+3), CONCAT("E", num+1));
-                    SET num=num+1;
-                END LOOP;
-            END IF;
-        END;
-    `
 
 const queries = [
     createGardenerTableQuery,
@@ -312,7 +285,6 @@ const queries = [
     createMaintenanceRequestTableQuery,
     createGrassCuttingRequestTableQuery,
     createGardener_CampusAreaTableQuery,
-    createGardener_EquipmentTableQuery,
     createGardener_GrassCuttingRequestTableQuery,
     createGrassCuttingRequest_UserTableQuery,
     createMaintenanceRequest_UserTableQuery,
@@ -324,10 +296,7 @@ const queries = [
     'CALL InsertEquipment();',
     'DROP PROCEDURE IF EXISTS InsertCampusArea;',
     createProcedureInsertCampusAreaQuery,
-    'CALL InsertCampusArea();',
-    'DROP PROCEDURE IF EXISTS InsertGardener_Equipment;',
-    createProcedureInsertGardener_EquipmentQuery,
-    'CALL InsertGardener_Equipment();'
+    'CALL InsertCampusArea();'
 ]
 
 function executeQueries(queryNum) {
