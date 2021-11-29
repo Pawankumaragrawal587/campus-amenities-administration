@@ -1,0 +1,57 @@
+<%- include ('../partials/header') %>
+
+<div class="container">
+    <%if(requests.length===0) {%>
+        <h2 class="center">No More Pending Requests are Present.</h2>
+    <%}%>
+    <%requests.forEach(function(request){%>
+        <div class="card mtp">
+            <div class="card-header">RequestID: <%=request.RequestID%></div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        StaffID: <%=request.StaffID%>
+                    </div>
+                    <div class="col-md-4">
+                        JobTitle: <%=request.JobTitle%>
+                    </div>
+                    <div class="col-md-4">
+                        RequestTime: <%=request.RequestTime.toString().slice(0, 33)%>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        Name: <%=request.Name%>
+                    </div>
+                    <div class="col-md-4">
+                        Mobile: <%=request.Mobile%>
+                    </div>
+                    <div class="col-md-4">
+                        Email: <%=request.Email%>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        DutyID: <%=request.DutyID%>
+                    </div>
+                    <div class="col-md-4">
+                        Day: <%=request.Day%>
+                    </div>
+                    <div class="col-md-4">
+                        TimeSlot: <%=request.TimeSlot%>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        Reason: <%=request.Reason%>
+                    </div>
+                </div>
+                <br>
+                <a class="btn btn-success btn-sm" href="/guest/leaveRequests/Approved/<%=request.RequestID%>?DutyID=<%=request.DutyID%>">Approve and Assign Replacement</a>
+                <a class="btn btn-danger btn-sm" href="/guest/leaveRequests/Rejected/<%=request.RequestID%>?DutyID=<%=request.DutyID%>">Reject</a>
+            </div>
+        </div>
+    <%});%>
+</div>
+
+<%- include ('../partials/footer') %>

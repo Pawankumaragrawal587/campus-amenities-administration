@@ -243,6 +243,37 @@ queryObj.selectAvailableStaff = function(params) {
     return mysqlQuery;
 }
 
+queryObj.selectPendingLeaveRequests = function(params) {
+    const mysqlQuery = 
+        `
+            SELECT * From LeaveRequests
+            NATURAL JOIN Staff
+            NATURAL JOIN Duty
+            WHERE Status="Pending";
+        `
+    return mysqlQuery;
+}
+
+queryObj.updateLeaveRequestStatus = function(params) {
+    const mysqlQuery = 
+        `
+            UPDATE LeaveRequests
+            SET Status="${params.Status}"
+            WHERE RequestID="${params.RequestID}";
+        `
+    return mysqlQuery;
+}
+
+queryObj.updateStaffReplacement = function(params) {
+    const mysqlQuery = 
+        `
+            UPDATE LeaveRequests
+            SET AssignedStaffID="${params.AssignedStaffID}"
+            WHERE RequestID="${params.RequestID}";
+        `
+    return mysqlQuery;
+}
+
 //================================================
 //              Insert Queries
 //================================================
@@ -342,6 +373,15 @@ queryObj.insertExpenditure = function(params) {
         `
             INSERT INTO Expenditure
             VALUES ("${params.ExpenditureID}", "${params.Description}", "${params.Amount}", "${params.Date}")
+        `
+    return mysqlQuery;
+}
+
+queryObj.insertNewLeaveRequest = function(params) {
+    const mysqlQuery = 
+        `
+            INSERT INTO LeaveRequests(RequestID, StaffID, DutyID, Date, RequestTime, Reason, Status)
+            VALUES ("${params.RequestID}", "${params.StaffID}", "${params.DutyID}", "${params.Date}", "${params.RequestTime}", "${params.Reason}", "${params.Status}");
         `
     return mysqlQuery;
 }
@@ -463,6 +503,23 @@ const createDutyTableQuery =
             TimeSlot varchar(10) CHECK (TimeSlot IN ('Morning', 'Evening'))
         );
     `
+
+const createLeaveRequestsTableQuery = 
+    `
+        CREATE TABLE IF NOT EXISTS LeaveRequests(
+            RequestID int Primary Key,
+            StaffID int NOT NULL,
+            DutyID int NOT NULL,
+            Date date NOT NULL,
+            RequestTime datetime NOT NULL,
+            Reason varchar(100),
+            Status varchar(10) CHECK (Status IN ('Pending', 'Approved', 'Rejected')),
+            AssignedStaffID int,
+            CONSTRAINT LeaveRequests_fk1 FOREIGN KEY (StaffID) references Staff(StaffID),
+            CONSTRAINT LeaveRequests_fk2 FOREIGN KEY (DutyID) references Duty(DutyID),
+            CONSTRAINT LeaveRequests_fk3 FOREIGN KEY (AssignedStaffID) references Staff(StaffID)
+        );
+    ` 
 
 const createIDGeneratorTableQuery = 
     `
@@ -808,6 +865,7 @@ const queries = [
     createExpenditureTableQuery,
     createStaffTableQuery,
     createDutyTableQuery,
+    createLeaveRequestsTableQuery,
     createIDGeneratorTableQuery,
     createUser_BookingTableQuery,
     createRoom_BookingTableQuery,

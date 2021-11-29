@@ -488,15 +488,75 @@ router.get('/guest/leaveRequests/new', middlewareObj.isStaff, function(req,res){
 });
 
 router.post('/guest/leaveRequests', middlewareObj.canSubmitLeaveRequests, function(req,res){
-    
+    mysqlConnection.query('SELECT GetID("LeaveRequests") as RequestID;', function(err,result){
+        if(err) {
+            console.log(err);
+            req.flash('error', 'Something Went Wrong!');
+            res.redirect('/guest/leaveRequests/new');
+        } else {
+            req.body.RequestID = result[0].RequestID;
+            req.body.DutyID = req.body.Day;
+            if(req.body.TimeSlot === 'Evening')req.body.DutyID = Number(req.body.DutyID) + 7;
+            req.body.RequestTime = new Date().toISOString().slice(0, 19).replace('T', ' ');
+            req.body.Status = 'Pending';
+            mysqlConnection.query(mysqlQueriesGuest.insertNewLeaveRequest(req.body), function(err,result){
+                if(err) {
+                    console.log(err);
+                    req.flash('error', 'Something Went Wrong! Please verify the details and try again.');
+                    res.redirect('/guest/leaveRequests/new');
+                } else {
+                    req.flash('success', 'Leave Request Submitted Successfully!');
+                    res.redirect('/guest');
+                }
+            });
+        }
+    });
 });
 
 router.get('/guest/leaveRequests', middlewareObj.isAdmin, function(req,res){
-    
+    mysqlConnection.query(mysqlQueriesGuest.selectPendingLeaveRequests(), function(err,result){
+        if(err) {
+            console.log(err);
+            res.redirect('/guest');
+        } else {
+            res.render('guest/leaveRequests', {requests:result});
+        }
+    });
 });
 
 router.get('/guest/leaveRequests/:Status/:RequestID', middlewareObj.isAdmin, function(req,res){
-    
+    mysqlConnection.query(mysqlQueriesGuest.updateLeaveRequestStatus(req.params), function(err,result){
+        if(err) {
+            console.log(err);
+        }
+    });
+    if(req.params.Status==="Approved") {
+        mysqlConnection.query(mysqlQueriesGuest.selectAvailableStaff(req.query), function(err,result){
+            if(err) {
+                console.log(err);
+                req.flash('error', 'Something Went Wrong!');
+                res.redirect('/guest/leaveRequests');
+            } else if(result.length === 0) {
+                req.flash('error', 'No Replacement Found!');
+                res.redirect('/guest/leaveRequests');
+            } else {
+                req.params.AssignedStaffID = result[0].StaffID;
+                mysqlConnection.query(mysqlQueriesGuest.updateStaffReplacement(req.params), function(err,result){
+                    if(err) {
+                        console.log(err);
+                        req.flash('error', 'Something Went Wrong!');
+                        res.redirect('/guest/leaveRequests');
+                    } else {
+                        req.flash('success', 'Leave Request Granted and Replecement Assigned!');
+                        res.redirect('/guest/leaveRequests');
+                    }
+                });
+            }
+        });
+    } else {
+        req.flash('error', 'Request Rejected!');
+        res.redirect('/guest/leaveRequests');
+    }
 });
 
 module.exports = router;
