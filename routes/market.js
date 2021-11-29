@@ -22,6 +22,19 @@ router.get('/market/shopBooking',function(req,res){
     res.render("market/shopBooking", {shopData:req.query});
 });
 
+function createShopKeeperLoginCreadential(params) {
+    const mysqlQuery = 
+        `
+            INSERT INTO User 
+            VALUES ("${params.ShopKeeperID}", "ShopKeeper", "${params.ShopKeeperName}", CONCAT("${params.ShopKeeperName}", "_", "${params.ShopKeeperID}", "@iitp.ac.in"), LEFT(MD5(RAND()), 10) );
+        `
+    mysqlConnection.query(mysqlQuery, function(err,result){
+        if(err) {
+            console.log(err);
+        }
+    });
+}
+
 router.post('/market/shopBooking', function(req,res){
     mysqlConnection.query('SELECT GetID("ShopKeeper") as ShopKeeperID;', function(err,result){
         if(err) {
@@ -29,7 +42,8 @@ router.post('/market/shopBooking', function(req,res){
             req.flash('error', "Something Went Wrong!");
             res.redirect('/market');
         } else {
-            req.body.ShopKeeperID = result[0].ShopKeeperID;
+            req.body.ShopKeeperID = 'SKP' + result[0].ShopKeeperID;
+            createShopKeeperLoginCreadential(req.body);
             req.body.Tender_Status = "Pending";
             mysqlConnection.query(mysqlQueriesMarket.insertShopKeeper(req.body), function(err,result){
                 if(err) {
@@ -43,7 +57,7 @@ router.post('/market/shopBooking', function(req,res){
                             req.flash('error', "Something Went Wrong!");
                             res.redirect('/market');
                         } else {
-                            req.flash('success', "Application Submitted Successfully!");
+                            req.flash('success', "Application Submitted Successfully! You will soon Receive your login Credentials");
                             res.redirect('/market');
                         }
                     });
@@ -171,11 +185,11 @@ router.get('/market/shopKeeperDetails', function(req,res){
     })
 });
 
-router.get('/market/billPaymentform',function(req,res){
+router.get('/market/billPaymentform', middlewareObj.isShopKeeper, function(req,res){
     res.render("market/billPaymentform");
 });
 
-router.post('/market/billPaymentform', function(req,res){
+router.post('/market/billPaymentform', middlewareObj.isShopKeeper, function(req,res){
     req.body.Payment_Status = 'Pending';
     const d = new Date(req.body.MonthAndYear);
     req.body.Month = d.getMonth()+1;

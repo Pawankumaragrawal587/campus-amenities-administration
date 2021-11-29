@@ -394,7 +394,7 @@ const createUserTableQuery =
     `
         CREATE TABLE IF NOT EXISTS User(
             CollegeID varchar(20) PRIMARY KEY,
-            UserType varchar(10) NOT NULL CHECK (UserType IN ("Admin", "Staff", "Student", "Gardener")),
+            UserType varchar(10) NOT NULL CHECK (UserType IN ("Admin", "Staff", "Student", "Gardener", "ShopKeeper")),
             Name varchar(50) NOT NULL,
             Webmail varchar(50) NOT NULL UNIQUE,
             Password varchar(50) NOT NULL
