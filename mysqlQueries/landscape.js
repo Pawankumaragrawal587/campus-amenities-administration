@@ -230,7 +230,7 @@ const createProcedureInsertCampusAreaQuery =
         SELECT COUNT(*) INTO num FROM CampusArea;
         IF num=0 THEN
             insertionLoop: LOOP
-                IF num>=8 THEN 
+                IF num>=5 THEN 
                     LEAVE insertionLoop;
                 END IF;
                 INSERT INTO CampusArea VALUES (CONCAT("A", num+1), CONCAT("Address", num+1),CONCAT("Description_",num+1));
