@@ -130,6 +130,24 @@
                     </div>	
                 </li>
             <%}%>
+            <%if(user && user.UserType === "Admin") {%>
+                <li>
+                    <div class="wrapper">
+                        <span class="square">
+                            <a class="tenth before after anc" href="/landscape/dutyRoster">Duty Roster</a>                        
+                        </span>
+                    </div>	
+                </li>
+            <%}%>
+            <%if(user && user.UserType === "Gardener") {%>
+                <li>
+                    <div class="wrapper">
+                        <span class="square">
+                            <a class="tenth before after anc" href="/landscape/leaveRequests/new">Submit Leave Request</a>                        
+                        </span>
+                    </div>	
+                </li>
+            <%}%>
         </ul>   
     </div>
     <div class="col">
@@ -146,6 +164,15 @@
                 <div class="wrapper">
                     <span class="square">
                       <a class="tenth before after anc" href="/landscape/MaintenanceRequest">Maintenance Requests</a>
+                    </span>
+                </div>	
+            </li>
+        <%}%>
+        <%if(user && user.UserType === "Admin") {%>
+            <li>
+                <div class="wrapper">
+                    <span class="square">
+                      <a class="tenth before after anc" href="/landscape/leaveRequests">Leave Requests</a>
                     </span>
                 </div>	
             </li>

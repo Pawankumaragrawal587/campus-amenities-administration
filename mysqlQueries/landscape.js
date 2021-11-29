@@ -67,6 +67,59 @@ queryObj.updateMaintenanceRequestStatus = function(params) {
     return mysqlQuery;
 }
 
+queryObj.selectScheduledGardener = function(params) {
+    const mysqlQuery = 
+        `
+            SELECT Gardener.GName, Gardener.GID, Gardener.Phone, CampusArea.Address FROM GardenerDuty
+            NATURAL JOIN Gardener_GardenerDuty
+            NATURAL JOIN Gardener
+            NATURAL JOIN Gardener_CampusArea 
+            INNER JOIN CampusArea ON CampusArea.AID=Gardener_CampusArea.AID
+            WHERE GardenerDuty.Day=${params.Day};
+        `
+    return mysqlQuery;
+}
+
+queryObj.selectPendingGardenerLeaveRequests = function(params) {
+    const mysqlQuery = 
+        `
+            SELECT * From GardenerLeaveRequests
+            NATURAL JOIN Gardener
+            NATURAL JOIN Duty
+            WHERE Status="Pending";
+        `
+    return mysqlQuery;
+}
+
+queryObj.updateGardenerLeaveRequestStatus = function(params) {
+    const mysqlQuery = 
+        `
+            UPDATE GardenerLeaveRequests
+            SET Status="${params.Status}"
+            WHERE RequestID="${params.RequestID}";
+        `
+    return mysqlQuery;
+}
+
+queryObj.selectAvailableGardener = function(params) {
+    const mysqlQuery = 
+        `
+            SELECT * FROM Gardener
+            WHERE Gardener.GID NOT IN (SELECT GID FROM Gardener_GardenerDuty WHERE Gardener_GardenerDuty.DutyID="${params.DutyID}");
+        `
+    return mysqlQuery;
+}
+
+queryObj.updateGardenerReplacement = function(params) {
+    const mysqlQuery = 
+        `
+            UPDATE GardenerLeaveRequests
+            SET AssignedGardenerID="${params.AssignedGardenerID}"
+            WHERE RequestID="${params.RequestID}";
+        `
+    return mysqlQuery;
+}
+
 //================================================
 //             Insert Queries
 //================================================
@@ -107,7 +160,14 @@ queryObj.insertMaintenanceRequest_User = function(params) {
     return mysqlQUery;
 }
 
-
+queryObj.insertNewGardenerLeaveRequest = function(params) {
+    const mysqlQuery = 
+    `
+        INSERT INTO GardenerLeaveRequests(RequestID, GID, DutyID, Date, RequestTime, Reason, Status)
+        VALUES ("${params.RequestID}", "${params.GID}", "${params.DutyID}", "${params.Date}", "${params.RequestTime}", "${params.Reason}", "${params.Status}");
+    `
+    return mysqlQuery;
+}
 
 //================================================
 //             Create Table Queries
@@ -121,6 +181,14 @@ const createGardenerTableQuery =
             Phone varchar(10) NOT NULL,
             Address varchar(50) NOT NULL,
             Salary int NOT NULL
+        );
+    `
+
+const createGardenerDutyTableQuery = 
+    `
+        CREATE TABLE IF NOT EXISTS GardenerDuty(
+            DutyID int Primary Key,
+            Day int CHECK (Day IN (1,2,3,4,5,6))
         );
     `
 
@@ -165,6 +233,21 @@ const createGrassCuttingRequestTableQuery =
             CONSTRAINT GrassCuttingRequest_fk2 FOREIGN KEY (AID) references CampusArea(AID)
         );
     `
+
+const createGardenerLeaveRequestsTableQuery = 
+    `
+        CREATE TABLE IF NOT EXISTS GardenerLeaveRequests(
+            RequestID int Primary Key,
+            GID varchar(10),
+            DutyID int,
+            Date date,
+            RequestTime datetime,
+            Reason varchar(100),
+            Status varchar(10) CHECK (Status IN ('Pending', 'Accepted', 'Denied')),
+            AssignedGardenerID varchar(10)
+        );
+    `
+
 // const createGardener_UserTableQuery = 
 //     `
 //         CREATE TABLE IF NOT EXISTS Gardener_User(
@@ -220,6 +303,17 @@ const createMaintenanceRequest_UserTableQuery =
         );
     `
     
+const createGardener_GardenerDutyTableQuery = 
+    `
+        CREATE TABLE IF NOT EXISTS Gardener_GardenerDuty(
+            GID varchar(10),
+            DutyID int,
+            CONSTRAINT Gardener_GardenerDuty_fk1 FOREIGN KEY (GID) references Gardener(GID),
+            CONSTRAINT Gardener_GardenerDuty_fk2 FOREIGN KEY (DutyID) references GardenerDuty(DutyID),
+            PRIMARY KEY(GID,DutyID)
+        );
+    `
+
 //================================================
 //            Create Procedure Queries
 //================================================
@@ -303,17 +397,88 @@ const createProcedureInsertGardener_CampusAreaQuery =
         END;
     `
 
+const createInsertGardenerDutiesProcedure = 
+    `
+        CREATE PROCEDURE InsertGardenerDuties()
+        BEGIN
+            DECLARE num int default 0;
+            SELECT COUNT(*) INTO num FROM GardenerDuty;
+            IF num=0 THEN
+                SET num = num + 1;
+                insertionLoop: LOOP
+                    IF num<=6 THEN 
+                        INSERT INTO GardenerDuty VALUES (num, num);
+                    ELSE
+                        LEAVE insertionLoop;
+                    END IF;
+                    SET num = num + 1;
+                END LOOP;
+            END IF;
+        END
+    `
+
+const createGardenerDutyScheduler = 
+    `
+        CREATE PROCEDURE GardenerDutyScheduler()
+        BEGIN
+            DECLARE num int default 0;
+            CALL InsertGardenerDuties();
+            SELECT COUNT(*) INTO num FROM Gardener_GardenerDuty;
+            IF num=0 THEN
+                insertionLoop: LOOP
+                    IF num<30 THEN
+                        INSERT INTO Gardener_GardenerDuty VALUES (CONCAT('G', num+1), 1);
+                        INSERT INTO Gardener_GardenerDuty VALUES (CONCAT('G', num+1), 2);
+                        INSERT INTO Gardener_GardenerDuty VALUES (CONCAT('G', num+1), 3);
+                        INSERT INTO Gardener_GardenerDuty VALUES (CONCAT('G', num+1), 4);
+                        INSERT INTO Gardener_GardenerDuty VALUES (CONCAT('G', num+1), 5);
+                        INSERT INTO Gardener_GardenerDuty VALUES (CONCAT('G', num+2), 1);
+                        INSERT INTO Gardener_GardenerDuty VALUES (CONCAT('G', num+2), 2);
+                        INSERT INTO Gardener_GardenerDuty VALUES (CONCAT('G', num+2), 3);
+                        INSERT INTO Gardener_GardenerDuty VALUES (CONCAT('G', num+2), 4);
+                        INSERT INTO Gardener_GardenerDuty VALUES (CONCAT('G', num+2), 6);
+                        INSERT INTO Gardener_GardenerDuty VALUES (CONCAT('G', num+3), 1);
+                        INSERT INTO Gardener_GardenerDuty VALUES (CONCAT('G', num+3), 2);
+                        INSERT INTO Gardener_GardenerDuty VALUES (CONCAT('G', num+3), 3);
+                        INSERT INTO Gardener_GardenerDuty VALUES (CONCAT('G', num+3), 5);
+                        INSERT INTO Gardener_GardenerDuty VALUES (CONCAT('G', num+3), 6);
+                        INSERT INTO Gardener_GardenerDuty VALUES (CONCAT('G', num+4), 1);
+                        INSERT INTO Gardener_GardenerDuty VALUES (CONCAT('G', num+4), 2);
+                        INSERT INTO Gardener_GardenerDuty VALUES (CONCAT('G', num+4), 4);
+                        INSERT INTO Gardener_GardenerDuty VALUES (CONCAT('G', num+4), 5);
+                        INSERT INTO Gardener_GardenerDuty VALUES (CONCAT('G', num+4), 6);
+                        INSERT INTO Gardener_GardenerDuty VALUES (CONCAT('G', num+5), 1);
+                        INSERT INTO Gardener_GardenerDuty VALUES (CONCAT('G', num+5), 3);
+                        INSERT INTO Gardener_GardenerDuty VALUES (CONCAT('G', num+5), 4);
+                        INSERT INTO Gardener_GardenerDuty VALUES (CONCAT('G', num+5), 5);
+                        INSERT INTO Gardener_GardenerDuty VALUES (CONCAT('G', num+5), 6);
+                        INSERT INTO Gardener_GardenerDuty VALUES (CONCAT('G', num+6), 2);
+                        INSERT INTO Gardener_GardenerDuty VALUES (CONCAT('G', num+6), 3);
+                        INSERT INTO Gardener_GardenerDuty VALUES (CONCAT('G', num+6), 4);
+                        INSERT INTO Gardener_GardenerDuty VALUES (CONCAT('G', num+6), 5);
+                        INSERT INTO Gardener_GardenerDuty VALUES (CONCAT('G', num+6), 6);
+                    ELSE
+                        LEAVE insertionLoop;
+                    END IF;
+                    SET num = num + 6;
+                END LOOP;
+            END IF;
+        END
+    `
 
 const queries = [
     createGardenerTableQuery,
+    createGardenerDutyTableQuery,
     createEquipmentTableQuery,
     createCampusAreaTableQuery,
     createMaintenanceRequestTableQuery,
     createGrassCuttingRequestTableQuery,
+    createGardenerLeaveRequestsTableQuery,
     createGardener_CampusAreaTableQuery,
     createGardener_GrassCuttingRequestTableQuery,
     createGrassCuttingRequest_UserTableQuery,
     createMaintenanceRequest_UserTableQuery,
+    createGardener_GardenerDutyTableQuery,
     'DROP PROCEDURE IF EXISTS InsertGardener;',
     createProcedureInsertGardenerQuery,
     'CALL InsertGardener();',
@@ -325,8 +490,12 @@ const queries = [
     'CALL InsertCampusArea();',
     'DROP PROCEDURE IF EXISTS InsertGardener_CampusArea;',
      createProcedureInsertGardener_CampusAreaQuery,
-    'CALL InsertGardener_CampusArea();'
-    
+    'CALL InsertGardener_CampusArea();',
+    'DROP PROCEDURE IF EXISTS InsertGardenerDuties',
+    createInsertGardenerDutiesProcedure,
+    'DROP PROCEDURE IF EXISTS GardenerDutyScheduler',
+    createGardenerDutyScheduler,
+    'CALL GardenerDutyScheduler();'
 ]
 
 function executeQueries(queryNum) {

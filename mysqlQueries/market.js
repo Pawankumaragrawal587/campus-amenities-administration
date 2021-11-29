@@ -226,7 +226,7 @@ const createTender_DetailsTableQuery =
             ShopName varchar(50) NOT NULL,
             License_registered date,
             License_expiry date,
-            Tender_Status varchar(10) NOT NULL,
+            Tender_Status varchar(10) NOT NULL CHECK(Tender_Status IN ('Pending', 'Approved', 'Rejected')),
             TypeDescription varchar(200) NOT NULL,
             CONSTRAINT Tender_Details_fk1 FOREIGN KEY (ShopID) references Shop(ShopID),
             CONSTRAINT Tender_Details_fk2 FOREIGN KEY (ShopKeeperID) references Shopkeeper(ShopKeeperID),
@@ -246,13 +246,13 @@ const createPayment_DetailsTableQuery =
             RentPaid int NOT NULL,
             ElectricityBillPaid int NOT NULL,
             DateofVerification date,
-            Payment_Status varchar(10) NOT NULL,
+            Payment_Status varchar(10) NOT NULL CHECK (Payment_Status IN ('Pending', 'Verified', 'Declined')),
             CONSTRAINT Payment_Details_fk1 FOREIGN KEY (ShopID) references Shop(ShopID),
             CONSTRAINT Payment_Details_fk2 FOREIGN KEY (ShopKeeperID) references ShopKeeper(ShopKeeperID),
             PRIMARY KEY (ShopID, ShopKeeperID, Month, Year)
         );
     `    
-    
+
 //================================================
 //            Create Procedure Queries
 //================================================

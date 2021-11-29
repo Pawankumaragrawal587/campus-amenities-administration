@@ -1,0 +1,44 @@
+<%- include ('../partials/header') %>
+
+<h1 class="center">Duty Roster</h1>
+<div class="container">
+    <form class="row g-3 justify-content-center" action="/landscape/dutyRoster" method="POST">
+        <div class="col-auto">
+            <label for="exampleFormControlInput1">Day</label>
+        </div>
+        <div class="col-auto">
+            <select id="exampleFormControlInput1" class="form-select" name="Day">
+                <option value="1" <%if(Day==1){%> selected <%}%>>Monday</option>
+                <option value="2" <%if(Day==2){%> selected <%}%>>Tuesday</option>
+                <option value="3" <%if(Day==3){%> selected <%}%>>Wednesday</option>
+                <option value="4" <%if(Day==4){%> selected <%}%>>Thursday</option>
+                <option value="5" <%if(Day==5){%> selected <%}%>>Friday</option>
+                <option value="6" <%if(Day==6){%> selected <%}%>>Saturday</option>
+            </select>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary mb-3">View Scheduled Gardeners</button>
+        </div>
+    </form>
+    <%if(!Day) {%>
+        <h2 class="center">Select Day And TimeSlot and view Scheduled Gardeners</h2>
+    <%} else {%>
+        <h2 class="center">Scheduled Gardeners</h2>
+    <%}%>
+    <%gardeners.forEach(function(gardener){%>
+        <div class="card mtp">
+            <div class="card-header">
+                <span>StaffID: <%=gardener.GID%></span>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">Name: <%=gardener.GName%></div>
+                    <div class="col-md-4">MobileNo: <%=gardener.Phone%></div>
+                    <div class="col-md-4">Assigned Campus Area: <%=gardener.Address%></div>
+                </div>
+            </div>
+        </div>
+    <%})%>
+</div>
+
+<%- include ('../partials/footer') %>

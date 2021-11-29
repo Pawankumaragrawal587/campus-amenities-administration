@@ -10,10 +10,10 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-4">
-                        StaffID: <%=request.StaffID%>
+                        GardenerID: <%=request.GID%>
                     </div>
                     <div class="col-md-4">
-                        JobTitle: <%=request.JobTitle%>
+                        JobTitle: Gardener
                     </div>
                     <div class="col-md-4">
                         RequestTime: <%=request.RequestTime.toString().slice(0, 33)%>
@@ -21,13 +21,13 @@
                 </div>
                 <div class="row">
                     <div class="col-md-4">
-                        Name: <%=request.Name%>
+                        Name: <%=request.GName%>
                     </div>
                     <div class="col-md-4">
-                        Mobile: <%=request.Mobile%>
+                        Mobile: <%=request.Phone%>
                     </div>
                     <div class="col-md-4">
-                        Email: <%=request.Email%>
+                        Address: <%=request.Address%>
                     </div>
                 </div>
                 <div class="row">
@@ -35,10 +35,10 @@
                         DutyID: <%=request.DutyID%>
                     </div>
                     <div class="col-md-4">
-                        Day: <%=request.Day%>, <%=request.TimeSlot%>
+                        Day: <%=request.Day%>
                     </div>
                     <div class="col-md-4">
-                        Date: <%=request.Date.toISOString().slice(0, 10)%>
+                        Date: <%=request.Date.toString().slice(0, 16)%>
                     </div>
                 </div>
                 <div class="row">
@@ -47,8 +47,8 @@
                     </div>
                 </div>
                 <br>
-                <a class="btn btn-success btn-sm" href="/guest/leaveRequests/Approved/<%=request.RequestID%>?DutyID=<%=request.DutyID%>">Approve and Assign Replacement</a>
-                <a class="btn btn-danger btn-sm" href="/guest/leaveRequests/Rejected/<%=request.RequestID%>?DutyID=<%=request.DutyID%>">Reject</a>
+                <a class="btn btn-success btn-sm" href="/landscape/leaveRequests/Accepted/<%=request.RequestID%>?DutyID=<%=request.DutyID%>">Approve and Assign Replacement</a>
+                <a class="btn btn-danger btn-sm" href="/landscape/leaveRequests/Denied/<%=request.RequestID%>?DutyID=<%=request.DutyID%>">Reject</a>
             </div>
         </div>
     <%});%>

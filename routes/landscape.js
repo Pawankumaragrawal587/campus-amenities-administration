@@ -131,4 +131,105 @@ router.get('/landscape/MaintenanceRequest/:Status/:MID', function(req,res){
     });
 });
 
+
+//===================================================
+//              Duty Roster
+//===================================================
+
+router.get('/landscape/dutyRoster', middlewareObj.isAdmin, function(req,res){
+    if(!req.query.Day) {
+        res.render('landscape/dutyRoster', {Day:false, gardeners:[]});
+    } else {
+        mysqlConnection.query(mysqlQueriesLandscape.selectScheduledGardener(req.query), function(err,result){
+            if(err) {
+                console.log(err);
+                req.flash('Something Went Wrong!');
+                res.redirect('/landscape');
+            } else {
+                res.render('landscape/dutyRoster', {Day:req.query.Day, gardeners:result});
+            }
+        })
+    }
+});
+
+router.post('/landscape/dutyRoster', middlewareObj.isAdmin, function(req,res){
+    const reqBody = new URLSearchParams(req.body).toString();
+    res.redirect('/landscape/dutyRoster?' + reqBody);
+});
+
+router.get('/landscape/leaveRequests/new', middlewareObj.isGardener, function(req,res){
+    res.render('landscape/newLeaveRequest');
+});
+
+router.post('/landscape/leaveRequests', middlewareObj.canSubmitGardenerLeaveRequests, function(req,res){
+    mysqlConnection.query('SELECT GetID("GardenerLeaveRequest") as RequestID;', function(err,result){
+        if(err) {
+            console.log(err);
+            req.flash('error', 'Something Went Wrong!');
+            res.redirect('/landscape/leaveRequests/new');
+        } else {
+            req.body.RequestID = result[0].RequestID;
+            req.body.DutyID = req.body.Day;
+            req.body.RequestTime = new Date().toISOString().slice(0, 19).replace('T', ' ');
+            req.body.Status = 'Pending';
+            mysqlConnection.query(mysqlQueriesLandscape.insertNewGardenerLeaveRequest(req.body), function(err,result){
+                if(err) {
+                    console.log(err);
+                    req.flash('error', 'Something Went Wrong! Please verify the details and try again.');
+                    res.redirect('/landscape/leaveRequests/new');
+                } else {
+                    req.flash('success', 'Leave Request Submitted Successfully!');
+                    res.redirect('/landscape');
+                }
+            });
+        }
+    });
+});
+
+router.get('/landscape/leaveRequests', middlewareObj.isAdmin, function(req,res){
+    mysqlConnection.query(mysqlQueriesLandscape.selectPendingGardenerLeaveRequests(), function(err,result){
+        if(err) {
+            console.log(err);
+            res.redirect('/landscape');
+        } else {
+            res.render('landscape/leaveRequest', {requests:result});
+        }
+    });
+});
+
+router.get('/landscape/leaveRequests/:Status/:RequestID', middlewareObj.isAdmin, function(req,res){
+    mysqlConnection.query(mysqlQueriesLandscape.updateGardenerLeaveRequestStatus(req.params), function(err,result){
+        if(err) {
+            console.log(err);
+        }
+    });
+    if(req.params.Status==="Accepted") {
+        mysqlConnection.query(mysqlQueriesLandscape.selectAvailableGardener(req.query), function(err,result){
+            if(err) {
+                console.log(err);
+                req.flash('error', 'Something Went Wrong!');
+                res.redirect('/landscape/leaveRequests');
+            } else if(result.length === 0) {
+                req.flash('error', 'No Replacement Found!');
+                res.redirect('/landscape/leaveRequests');
+            } else {
+                req.params.AssignedGardenerID = result[0].GID;
+                mysqlConnection.query(mysqlQueriesLandscape.updateGardenerReplacement(req.params), function(err,result){
+                    if(err) {
+                        console.log(err);
+                        req.flash('error', 'Something Went Wrong!');
+                        res.redirect('/landscape/leaveRequests');
+                    } else {
+                        req.flash('success', 'Leave Request Granted and Replacement Assigned!');
+                        res.redirect('/landscape/leaveRequests');
+                    }
+                });
+            }
+        });
+    } else {
+        req.flash('error', 'Request Rejected!');
+        res.redirect('/landscape/leaveRequests');
+    }
+});
+
 module.exports = router;
