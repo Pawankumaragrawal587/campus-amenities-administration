@@ -1,6 +1,17 @@
 <%- include ('../partials/header') %>
+<style>
+    .center {
+        display: block;
+        margin-top: 10px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    </style>
+    <img src="https://thumbs.dreamstime.com/b/clean-wash-wipe-vacuum-cleaner-worker-pictogram-20997926.jpg"
+    class="center" height="150" alt="Logo">
 
 <h1 class="center">Duty Roster</h1>
+<br><br><br>
 <div class="container">
     <form class="row g-3 justify-content-center" action="/guest/dutyRoster" method="POST">
         <div class="col-auto">
@@ -31,9 +42,9 @@
         </div>
     </form>
     <%if(!Day || !TimeSlot) {%>
-        <h2 class="center">Select Day And TimeSlot and view Scheduled Staff</h2>
+        <h4 class="center">Select Day And Timeslot and view Scheduled Staff</h4>
     <%} else {%>
-        <h2 class="center">Scheduled Staff</h2>
+        <h4 class="center">Scheduled Staff</h4>
     <%}%>
     <%staffs.forEach(function(staff){%>
         <div class="card mtp">

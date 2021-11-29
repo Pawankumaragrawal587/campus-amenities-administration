@@ -1,6 +1,17 @@
 <%- include ('../partials/header') %>
-
-<h1 class="center">Duty Roster</h1>
+<style>
+.center {
+    display: block;
+    margin-top: 10px;
+    margin-left: auto;
+    margin-right: auto;
+}
+</style>
+<img src="https://www.kindpng.com/picc/m/179-1796123_silhouette-gardening-garden-tool-gardener-person-gardening-silhouette.png"
+			class="center" height="150" alt="Logo">
+<!-- <h1 class="center">Duty Roster</h1> -->
+<br>
+<br>
 <div class="container">
     <form class="row g-3 justify-content-center" action="/landscape/gardenerDetails" method="POST">
         <div class="col-auto">
@@ -19,9 +30,9 @@
     </form>
 
     <%if(!AID) {%>
-        <h2 class="center">Select Campus Area and view Gardeners</h2>
+        <h4 class="center">Select Campus Area and view Gardeners</h4>
     <%} else {%>
-        <h2 class="center">Gardeners</h2>
+        <h4 class="center">Gardeners</h4>
     <%}%>
     <%gardeners.forEach(function(gardener){%>
         <div class="card mtp">

@@ -1,7 +1,17 @@
 <%- include ('../partials/header') %>
+<style>
+    .center {
+        display: block;
+        margin-top: 10px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    </style>
 
 <h1 class="center">Guest Room Availability</h1>
-
+<img src="https://thumbs.dreamstime.com/b/rooms-available-vector-icon-line-design-white-background-eps-91384515.jpg"
+class="center" height="150" alt="Logo">
+<br><br><br>
 <div class="container">
     <form class="row g-3 justify-content-center" action="/guest/roomAvailability" method="POST">
         <div class="col-auto">
@@ -21,11 +31,11 @@
         </div>
     </form>
     <%if(!stayFrom) {%>
-        <h2 class="center">Select Duration of Stay and Check Availability</h2>
+        <h4 class="center">Select Duration of Stay and Check Availability</h4>
     <%} else if(rooms.length===0) {%>
-        <h2 class="center">No Rooms Available for selected duration</h2>
+        <h4 class="center">No Rooms Available for selected duration</h4>
     <%} else {%>
-        <h2 class="center">Available Rooms</h2>
+        <h4 class="center">Available Rooms</h4>
     <%}%>
     <div>
         <% rooms.forEach(function(room){ %>
@@ -39,7 +49,7 @@
                     <span style="margin-left: 20px;">Per Day Cost: ₹ <%= room.Cost %></span>
                     <hr>
                     Number of Available Rooms: <%= room.num %>
-                    <a style="margin-left: 20px;" href="/guest/roomBooking?occupancy=<%=room.Occupancy%>&hasBathroom=<%=room.HasBathroom%>&stayFrom=<%=stayFrom%>&stayTill=<%=stayTill%>" class="btn btn-primary center" role="button">Book</a>
+                    <a style="margin-left: 20px;" href="/guest/roomBooking?occupancy=<%=room.Occupancy%>&hasBathroom=<%=room.HasBathroom%>&stayFrom=<%=stayFrom%>&stayTill=<%=stayTill%>" class="btn btn-primary " role="button">Book</a>
                 </div>
             </div>
         <% }); %>

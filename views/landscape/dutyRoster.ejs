@@ -1,6 +1,19 @@
 <%- include ('../partials/header') %>
 
+<style>
+    .center {
+			display: block;
+			margin-top: 10px;
+			margin-left: auto;
+			margin-right: auto;
+		}
+</style>
+
+<img src="https://cdn-icons-png.flaticon.com/512/185/185634.png"
+			class="center" height="150" alt="Logo">
 <h1 class="center">Duty Roster</h1>
+<br>
+<br>
 <div class="container">
     <form class="row g-3 justify-content-center" action="/landscape/dutyRoster" method="POST">
         <div class="col-auto">
@@ -21,9 +34,9 @@
         </div>
     </form>
     <%if(!Day) {%>
-        <h2 class="center">Select Day And TimeSlot and view Scheduled Gardeners</h2>
+        <h4 class="center">Select Day And TimeSlot and view Scheduled Gardeners</h4>
     <%} else {%>
-        <h2 class="center">Scheduled Gardeners</h2>
+        <h4 class="center">Scheduled Gardeners</h4>
     <%}%>
     <%gardeners.forEach(function(gardener){%>
         <div class="card mtp">

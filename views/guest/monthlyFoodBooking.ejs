@@ -1,7 +1,16 @@
 <%- include ('../partials/header') %>
-
-<h1 class="center">Monthly Food Bookings</h1>
-
+<style>
+    .center {
+        display: block;
+        margin-top: 10px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    </style>
+<img src="https://www.nicepng.com/png/detail/201-2018162_restaurant-cutlery-symbol-of-a-cross-comments-fork.png"
+    class="center" height="150" alt="Logo">
+    <h1 class="center">Monthly Food Bookings</h1>
+    <br><br><br>
 <div class="container">
     <form class="row g-3 justify-content-center" action="/guest/monthlyBookings/food" method="POST">
         <div class="col-auto">
@@ -15,12 +24,12 @@
         </div>
     </form>
     <%if(!monthAndYear) {%>
-        <h2 class="center">Select Month And Year and View Bookings</h2>
+        <h3 class="center">Select Month And Year and View Bookings</h3>
     <%} else if(bookings.length===0) {%>
-        <h2 class="center">No Records Available for selected Month</h2>
+        <h3 class="center">No Records Available for selected Month</h3>
     <%} else {%>
-        <h3 class="center">Monthly Booking Amount: ₹ <%=totalBookingAmount%></h3>
-        <h2 class="center">Bookings</h2>
+        <h3 class="center">Monthly Booking Amount: ₹ <%=totalBookingAmount%></h4>
+        <h3 class="center">Bookings</h3>
     <%}%>
     <%bookings.forEach(function(request){%>
         <div class="card mtp">
