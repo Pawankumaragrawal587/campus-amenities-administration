@@ -8,7 +8,7 @@
                 <label for="Select" class="form-label">Equipment Name</label>
                 <select id="Select" class="form-select" name="EID">
                     <%equipments.forEach(function(equipment){%>
-                        <option value="<%=equipment.EID%>"><%=equipment.EquipmentName%></option>
+                        <option value="<%=equipment.EID%>">EquipmentID: <%=equipment.EID%> , <%=equipment.EquipmentName%></option>
                     <%});%>
                 </select>
             </div>

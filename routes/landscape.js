@@ -74,4 +74,61 @@ router.get('/landscape/MaintenanceRequest/new', middlewareObj.isLoggedIn, functi
     });
 });
 
+router.post('/landscape/MaintenanceRequest', middlewareObj.isLoggedIn, function(req,res){
+    mysqlConnection.query('SELECT GetID("MaintenanceRequest") as MID;', function(err,result){
+        if(err) {
+            console.log(err);
+            req.flash('error', 'Something Went Wrong! Please Try Again.');
+            res.redirect('/landscape');
+        } else {
+            req.body.MID = result[0].MID;
+            req.body.Date = new Date().toISOString().slice(0, 10);
+            req.body.Status = 'Pending';
+            req.body.CollegeID = req.user.CollegeID;
+            mysqlConnection.query(mysqlQueriesLandscape.insertMaintenanceRequest(req.body), function(err,result){
+                if(err) {
+                    console.log(err);
+                    req.flash('error', 'Something Went Wrong! Please Try Again.');
+                    res.redirect('/landscape');
+                } else {
+                    mysqlConnection.query(mysqlQueriesLandscape.insertMaintenanceRequest_User(req.body),function(err,result){
+                        if(err) {
+                            console.log(err);
+                            req.flash('error', 'Something Went Wrong! Please Try Again.');
+                            res.redirect('/landscape');
+                        } else {
+                            req.flash('success', 'Maintenance Request Submitted Successfully!');
+                            res.redirect('/landscape');
+                        }
+                    });
+                }
+            });
+        }
+    })
+});
+
+router.get('/landscape/MaintenanceRequest', middlewareObj.isAdmin, function(req,res){
+    mysqlConnection.query(mysqlQueriesLandscape.selectPendingMaintenanceRequest(),function(err,result){
+        if(err) {
+            console.log(err);
+            req.flash('error', 'Something Went Wrong! Please Try Again.');
+            res.redirect('/landscape');
+        } else {
+            res.render('landscape/MaintenanceRequest', {requests:result});
+        }
+    })
+});
+
+router.get('/landscape/MaintenanceRequest/:Status/:MID', function(req,res){
+    mysqlConnection.query(mysqlQueriesLandscape.updateMaintenanceRequestStatus(req.params), function(err,result){
+        if(err) {
+            console.log(err);
+            req.flash('error', 'Something Went Wrong! Please Try Again.');
+            res.redirect('/landscape/MaintenanceRequest');
+        } else {
+            res.redirect('/landscape/MaintenanceRequest');
+        }
+    });
+});
+
 module.exports = router;

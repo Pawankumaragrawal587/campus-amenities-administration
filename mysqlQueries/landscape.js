@@ -37,12 +37,32 @@ queryObj.updateGrassCuttingRequestStatus = function(params) {
     return mysqlQuery;
 }
 
-
-
 queryObj.selectEquipment = function() {
     const mysqlQuery = 
         `
             SELECT * FROM Equipment;
+        `
+    return mysqlQuery;
+}
+
+queryObj.selectPendingMaintenanceRequest = function() {
+    const mysqlQuery = 
+        `
+            SELECT * FROM MaintenanceRequest
+            NATURAL JOIN MaintenanceRequest_User 
+            NATURAL JOIN User 
+            NATURAL JOIN Equipment
+            Where Status="Pending";
+        `
+    return mysqlQuery;
+}
+
+queryObj.updateMaintenanceRequestStatus = function(params) {
+    const mysqlQuery = 
+        `
+            UPDATE MaintenanceRequest
+            SET Status="${params.Status}"
+            WHERE MID="${params.MID}";
         `
     return mysqlQuery;
 }
@@ -68,6 +88,26 @@ queryObj.insertGrassCuttingRequest_User = function(params) {
         `
     return mysqlQuery;
 }
+
+queryObj.insertMaintenanceRequest = function(params) {
+    const mysqlQuery = 
+        `
+            INSERT INTO MaintenanceRequest
+            VALUES ("${params.MID}", "${params.EID}", "${params.Date}", "${params.Description}", "${params.Status}");
+        `
+    return mysqlQuery;
+}
+
+queryObj.insertMaintenanceRequest_User = function(params) {
+    const mysqlQUery = 
+        `
+            INSERT INTO MaintenanceRequest_User 
+            VALUES ("${params.MID}", "${params.CollegeID}");
+        `
+    return mysqlQUery;
+}
+
+
 
 //================================================
 //             Create Table Queries
@@ -101,15 +141,15 @@ const createCampusAreaTableQuery =
             
         );
     `
-const createMaintainanceRequestTableQuery = 
+const createMaintenanceRequestTableQuery = 
     `
-        CREATE TABLE IF NOT EXISTS MaintainanceRequest(
+        CREATE TABLE IF NOT EXISTS MaintenanceRequest(
             MID varchar(10) PRIMARY KEY,
             EID varchar(10),
             Date date NOT NULL,
             Description varchar(50) NOT NULL,
             Status varchar(15) NOT NULL, 
-            CONSTRAINT MaintainanceRequest_fk1 FOREIGN KEY(EID) references Equipment(EID) 
+            CONSTRAINT MaintenanceRequest_fk1 FOREIGN KEY(EID) references Equipment(EID) 
         );
     `
 const createGrassCuttingRequestTableQuery = 
@@ -186,7 +226,7 @@ const createMaintenanceRequest_UserTableQuery =
             CollegeID varchar(10),
             CONSTRAINT MaintenanceRequest_User_User_fk1 FOREIGN KEY (MID) references MaintenanceRequest(MID),
             CONSTRAINT MaintenanceRequest_User_User_fk2 FOREIGN KEY (CollegeID) references User(CollegeID),
-            PRIMARY KEY(GrassCuttingRequestID,CollegeID)
+            PRIMARY KEY(MID,CollegeID)
         );
     `
     
@@ -253,12 +293,13 @@ const queries = [
     createGardenerTableQuery,
     createEquipmentTableQuery,
     createCampusAreaTableQuery,
-    createMaintainanceRequestTableQuery,
+    createMaintenanceRequestTableQuery,
     createGrassCuttingRequestTableQuery,
     createGardener_CampusAreaTableQuery,
     createGardener_EquipmentTableQuery,
     createGardener_GrassCuttingRequestTableQuery,
     createGrassCuttingRequest_UserTableQuery,
+    createMaintenanceRequest_UserTableQuery,
     'DROP PROCEDURE IF EXISTS InsertGardener;',
     createProcedureInsertGardenerQuery,
     'CALL InsertGardener();',
