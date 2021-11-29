@@ -60,12 +60,35 @@ router.get('/landscape/grassCuttingRequest/:Status/:GrassCuttingRequestID', func
     mysqlConnection.query(mysqlQueriesLandscape.updateGrassCuttingRequestStatus(req.params), function(err,result){
         if(err) {
             console.log(err);
-            req.flash('error', 'Something Went Wrong!');
-            res.redirect('/landscape/grassCuttingRequest');
-        } else {
-            res.redirect('/landscape/grassCuttingRequest');
         }
     });
+    if(req.params.Status === "Approved") {
+        const currDay = new Date();
+        let day = currDay.getDay();
+        if(day == 7)day=1;
+        req.params.DutyID = day;
+        mysqlConnection.query(mysqlQueriesLandscape.selectAvailableGardener(req.params), function(err,result){
+            if(err) {
+                console.log(err);
+                req.flash('error', 'Something Went Wrong!');
+                res.redirect('/landscape/grassCuttingRequest');
+            } else {
+                req.params.GID = result[0].GID;
+                mysqlConnection.query(mysqlQueriesLandscape.updateGIDInGrassCuttingRequest(req.params), function(err,result){
+                    if(err) {
+                        console.log(err);
+                        req.flash('error', 'Something Went Wrong!');
+                        res.redirect('/landscape/grassCuttingRequest');
+                    } else {
+                        req.flash('success', 'Grass Cutting Request approved and Gardener Assigned!');
+                        res.redirect('/landscape/grassCuttingRequest');
+                    }
+                })
+            }
+        });
+    } else {
+        res.redirect('/landscape/grassCuttingRequest');
+    }
 });
 
 router.get('/landscape/MaintenanceRequest/new', middlewareObj.isLoggedIn, function(req,res){

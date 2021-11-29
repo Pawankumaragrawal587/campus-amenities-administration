@@ -120,8 +120,15 @@ queryObj.updateGardenerReplacement = function(params) {
     return mysqlQuery;
 }
 
-
-
+queryObj.updateGIDInGrassCuttingRequest = function(params) {
+    const mysqlQuery = 
+        `
+            UPDATE GrassCuttingRequest
+            SET GID="${params.GID}"
+            WHERE GrassCuttingRequestID="${params.GrassCuttingRequestID}";
+        `
+    return mysqlQuery;
+}
 
 //================================================
 //             Insert Queries
