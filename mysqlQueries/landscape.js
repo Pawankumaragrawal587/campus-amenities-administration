@@ -292,18 +292,14 @@ const createProcedureInsertGardener_EquipmentQuery =
         CREATE PROCEDURE InsertGardener_Equipment()
         BEGIN
             declare num int default 0;
-            declare num2 int default 0;
             SELECT COUNT(*) INTO num FROM Gardener_Equipment;
             IF num=0 THEN
                 insertionLoop: LOOP
-                    IF num>=30 THEN 
+                    IF num>=10 THEN 
                         LEAVE insertionLoop;
                     END IF;
-                    INSERT INTO Gardener_Equipment VALUES (CONCAT("G", num+1), CONCAT("E", num2+1));
-                    INSERT INTO Gardener_Equipment VALUES (CONCAT("G", num+2), CONCAT("E", num2+1));
-                    INSERT INTO Gardener_Equipment VALUES (CONCAT("G", num+3), CONCAT("E", num2+1)); 
-                    SET num2 = num2 + 1;
-                    SET num=num+3;
+                    INSERT INTO Gardener_Equipment VALUES (CONCAT("G", num+3), CONCAT("E", num+1));
+                    SET num=num+1;
                 END LOOP;
             END IF;
         END;
