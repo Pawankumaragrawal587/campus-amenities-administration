@@ -278,6 +278,32 @@ const createProcedureInsertCampusAreaQuery =
         END;
     `
 
+const createProcedureInsertGardener_CampusAreaQuery = 
+    `
+        CREATE PROCEDURE InsertGardener_CampusArea()
+        BEGIN
+            declare num int default 0;
+            declare num2 int default 0;   
+            SELECT COUNT(*) INTO num FROM Gardener_CampusArea;
+            IF num=0 THEN
+                insertionLoop: LOOP
+                    IF num>=30 THEN 
+                        LEAVE insertionLoop;
+                    END IF;
+                    INSERT INTO Gardener_CampusArea VALUES (CONCAT("G", num+1), CONCAT("A",num2+1));
+                    INSERT INTO Gardener_CampusArea VALUES (CONCAT("G", num+2), CONCAT("A",num2+1));
+                    INSERT INTO Gardener_CampusArea VALUES (CONCAT("G", num+3), CONCAT("A",num2+1));
+                    INSERT INTO Gardener_CampusArea VALUES (CONCAT("G", num+4), CONCAT("A",num2+1));
+                    INSERT INTO Gardener_CampusArea VALUES (CONCAT("G", num+5), CONCAT("A",num2+1));
+                    INSERT INTO Gardener_CampusArea VALUES (CONCAT("G", num+6), CONCAT("A",num2+1));
+                    SET num = num + 6;
+                    SET num2 = num2 + 1;
+                END LOOP;
+            END IF;
+        END;
+    `
+
+
 const queries = [
     createGardenerTableQuery,
     createEquipmentTableQuery,
@@ -296,7 +322,11 @@ const queries = [
     'CALL InsertEquipment();',
     'DROP PROCEDURE IF EXISTS InsertCampusArea;',
     createProcedureInsertCampusAreaQuery,
-    'CALL InsertCampusArea();'
+    'CALL InsertCampusArea();',
+    'DROP PROCEDURE IF EXISTS InsertGardener_CampusArea;',
+     createProcedureInsertGardener_CampusAreaQuery,
+    'CALL InsertGardener_CampusArea();'
+    
 ]
 
 function executeQueries(queryNum) {
