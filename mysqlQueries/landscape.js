@@ -105,13 +105,11 @@ const createMaintainanceRequestTableQuery =
     `
         CREATE TABLE IF NOT EXISTS MaintainanceRequest(
             MID varchar(10) PRIMARY KEY,
-            GID varchar(10),
             EID varchar(10),
             Date date NOT NULL,
             Description varchar(50) NOT NULL,
             Status varchar(15) NOT NULL, 
-            CONSTRAINT MaintainanceRequest_fk1 FOREIGN KEY(GID) references Gardener(GID),
-            CONSTRAINT MaintainanceRequest_fk2 FOREIGN KEY(EID) references Equipment(EID) 
+            CONSTRAINT MaintainanceRequest_fk1 FOREIGN KEY(EID) references Equipment(EID) 
         );
     `
 const createGrassCuttingRequestTableQuery = 
@@ -178,6 +176,16 @@ const createGrassCuttingRequest_UserTableQuery =
             CollegeID varchar(10),
             CONSTRAINT GrassCuttingRequest_User_fk1 FOREIGN KEY (GrassCuttingRequestID) references GrassCuttingRequest(GrassCuttingRequestID),
             CONSTRAINT GrassCuttingRequest_User_fk2 FOREIGN KEY (CollegeID) references User(CollegeID),
+            PRIMARY KEY(GrassCuttingRequestID,CollegeID)
+        );
+    `
+const createMaintenanceRequest_UserTableQuery = 
+    `
+        CREATE TABLE IF NOT EXISTS MaintenanceRequest_User(
+            MID varchar(10),
+            CollegeID varchar(10),
+            CONSTRAINT MaintenanceRequest_User_User_fk1 FOREIGN KEY (MID) references MaintenanceRequest(MID),
+            CONSTRAINT MaintenanceRequest_User_User_fk2 FOREIGN KEY (CollegeID) references User(CollegeID),
             PRIMARY KEY(GrassCuttingRequestID,CollegeID)
         );
     `
