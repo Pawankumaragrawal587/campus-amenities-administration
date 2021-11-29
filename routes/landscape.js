@@ -68,4 +68,10 @@ router.get('/landscape/grassCuttingRequest/:Status/:GrassCuttingRequestID', func
     });
 });
 
+router.get('/landscape/MaintenanceRequest/new', middlewareObj.isLoggedIn, function(req,res){
+    mysqlConnection.query(mysqlQueriesLandscape.selectEquipment(), function(err,result){
+        res.render('landscape/newMaintenanceRequest', {equipments:result});
+    });
+});
+
 module.exports = router;

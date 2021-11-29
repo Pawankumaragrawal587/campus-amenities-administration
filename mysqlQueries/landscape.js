@@ -37,6 +37,16 @@ queryObj.updateGrassCuttingRequestStatus = function(params) {
     return mysqlQuery;
 }
 
+
+
+queryObj.selectEquipment = function() {
+    const mysqlQuery = 
+        `
+            SELECT * FROM Equipment;
+        `
+    return mysqlQuery;
+}
+
 //================================================
 //             Insert Queries
 //================================================

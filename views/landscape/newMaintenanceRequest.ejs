@@ -1,0 +1,28 @@
+<%- include ('../partials/header') %>
+
+<div class="container">
+    <h1 id="mainHeading">New Maintenance Request</h1>
+    <form class="row g-3 justify-content-center" action='/landscape/MaintenanceRequest' method="POST">
+        <div class="row align-items-center">
+            <div class="col">
+                <label for="Select" class="form-label">Equipment Name</label>
+                <select id="Select" class="form-select" name="EID">
+                    <%equipments.forEach(function(equipment){%>
+                        <option value="<%=equipment.EID%>"><%=equipment.EquipmentName%></option>
+                    <%});%>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="mb-3">
+                <label for="exampleFormControlTextarea1" class="form-label">Description</label>
+                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="Description" required></textarea>
+            </div>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary mb-3">Submit</button>
+        </div>
+    </form>
+</div>
+
+<%- include ('../partials/footer') %>
