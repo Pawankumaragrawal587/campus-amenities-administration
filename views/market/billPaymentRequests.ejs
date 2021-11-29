@@ -1,5 +1,8 @@
 <%- include ('../partials/header') %>
 <div class="container">
+	<%if(requests.length===0) {%>
+        <h2 class="center">No More Pending Requests are Present.</h2>
+    <%}%>
 	<%requests.forEach(function(request){%>
 	    <div class="card">
 		<div class="card-header">
