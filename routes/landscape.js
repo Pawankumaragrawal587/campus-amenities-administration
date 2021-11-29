@@ -131,6 +131,25 @@ router.get('/landscape/MaintenanceRequest/:Status/:MID', function(req,res){
     });
 });
 
+//===================================================
+//              Equipment Stock
+//===================================================
+
+router.get('/landscape/equipmentstock', middlewareObj.isLoggedIn, function(req,res){
+    mysqlConnection.query(mysqlQueriesLandscape.selectallEquipment(),function(err,result){
+        if(err) {
+            console.log(err);
+            req.flash('error', 'Something Went Wrong! Please Try Again.');
+            res.redirect('/landscape');
+        } else {
+            res.render('landscape/equipmentstock', {requests:result});
+        }
+    });
+});
+
+
+
+
 
 //===================================================
 //              Duty Roster

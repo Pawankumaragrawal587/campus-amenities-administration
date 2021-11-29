@@ -120,6 +120,9 @@ queryObj.updateGardenerReplacement = function(params) {
     return mysqlQuery;
 }
 
+
+
+
 //================================================
 //             Insert Queries
 //================================================
@@ -168,6 +171,15 @@ queryObj.insertNewGardenerLeaveRequest = function(params) {
     `
     return mysqlQuery;
 }
+
+queryObj.selectallEquipment = function(params) {
+    const mysqlQuery = 
+        `
+            SELECT * FROM Equipment
+        `
+    return mysqlQuery;
+}
+
 
 //================================================
 //             Create Table Queries
@@ -329,7 +341,7 @@ const createProcedureInsertGardenerQuery =
                     IF num>=30 THEN 
                         LEAVE insertionLoop;
                     END IF;
-                    INSERT INTO Gardener VALUES (CONCAT("G", num+1), CONCAT("Gardener_Name", num+1),CONCAT("GPhone",num+1),CONCAT("GardenerAddress_", num+1),FLOOR(RAND()*(100000-10000+1))+10000);
+                    INSERT INTO Gardener VALUES (CONCAT("G", num+1), CONCAT("Gardener_NAME", num+1),LPAD(FLOOR(RAND() * 10000000000), 10, '0'),CONCAT("GardenerAddress_", num+1),FLOOR(RAND()*(100000-10000+1))+10000);
                     SET num = num + 1;
                 END LOOP;
             END IF;

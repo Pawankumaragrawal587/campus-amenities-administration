@@ -1,0 +1,27 @@
+<%- include ('../partials/header') %>
+
+<h1 class="center">Equipment Stock</h1>
+<div class="container">
+    <br>
+    <%requests.forEach(function(request){%>
+        <div class="card mtp">
+            <div class="card-header">EquipmentID: <%=request.EID%></div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        Equipment Name: <%=request.EquipmentName%>
+                    </div>
+                    <div class="col-md-4">
+                        Equipment Cost: <%=request.Cost%>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+    <%});%>
+</div>
+
+<%- include ('../partials/footer') %>
+
+
+});
