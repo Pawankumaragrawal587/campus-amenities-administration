@@ -120,6 +120,9 @@ queryObj.updateGardenerReplacement = function(params) {
     return mysqlQuery;
 }
 
+
+
+
 //================================================
 //             Insert Queries
 //================================================
@@ -168,6 +171,15 @@ queryObj.insertNewGardenerLeaveRequest = function(params) {
     `
     return mysqlQuery;
 }
+
+queryObj.selectallEquipment = function(params) {
+    const mysqlQuery = 
+        `
+            SELECT * FROM Equipment
+        `
+    return mysqlQuery;
+}
+
 
 //================================================
 //             Create Table Queries
