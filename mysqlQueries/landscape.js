@@ -130,6 +130,16 @@ queryObj.updateGIDInGrassCuttingRequest = function(params) {
     return mysqlQuery;
 }
 
+queryObj.selectGardeners = function(params) {
+    const mysqlQuery = 
+        `
+            SELECT * FROM Gardener
+            NATURAL JOIN Gardener_CampusArea 
+            WHERE Gardener_CampusArea.AID="${params.AID}";
+        `
+    return mysqlQuery;
+}
+
 //================================================
 //             Insert Queries
 //================================================

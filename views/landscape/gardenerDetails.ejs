@@ -1,0 +1,42 @@
+<%- include ('../partials/header') %>
+
+<h1 class="center">Duty Roster</h1>
+<div class="container">
+    <form class="row g-3 justify-content-center" action="/landscape/gardenerDetails" method="POST">
+        <div class="col-auto">
+            <label for="exampleFormControlInput1">Area</label>
+        </div>
+        <div class="col-auto">
+            <select id="exampleFormControlInput1" class="form-select" name="AID">
+                <%areas.forEach(function(area){%>
+                    <option value="<%=area.AID%>" <%if(AID==area.AID){%> selected <%}%> ><%=area.Address%></option>
+                <%});%>
+            </select>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary mb-3">View Gardeners</button>
+        </div>
+    </form>
+
+    <%if(!AID) {%>
+        <h2 class="center">Select Campus Area and view Gardeners</h2>
+    <%} else {%>
+        <h2 class="center">Gardeners</h2>
+    <%}%>
+    <%gardeners.forEach(function(gardener){%>
+        <div class="card mtp">
+            <div class="card-header">
+                <span>GardenerID: <%=gardener.GID%></span>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">Name: <%=gardener.GName%></div>
+                    <div class="col-md-4">MobileNo: <%=gardener.Phone%></div>
+                    <div class="col-md-4">Address: <%=gardener.Address%></div>
+                </div>
+            </div>
+        </div>
+    <%})%>
+</div>
+
+<%- include ('../partials/footer') %>

@@ -274,4 +274,45 @@ router.get('/landscape/leaveRequests/:Status/:RequestID', middlewareObj.isAdmin,
     }
 });
 
+//===================================================
+//              Area Wise Gradener Details
+//===================================================
+
+router.get('/landscape/gardenerDetails', middlewareObj.isAdmin, function(req,res){
+    if(!req.query.AID) {
+        mysqlConnection.query(mysqlQueriesLandscape.selectCampusArea(), function(err,result){
+            if(err) {
+                console.log(err);
+                req.flash('Something Went Wrong!');
+                res.redirect('/landscape');
+            } else {
+                res.render('landscape/gardenerDetails', {AID:false, gardeners:[], areas:result});     
+            }
+        });
+    } else {
+        mysqlConnection.query(mysqlQueriesLandscape.selectCampusArea(), function(err,result1){
+            if(err) {
+                console.log(err);
+                req.flash('Something Went Wrong!');
+                res.redirect('/landscape');
+            } else {
+                mysqlConnection.query(mysqlQueriesLandscape.selectGardeners(req.query), function(err,result2){
+                    if(err) {
+                        console.log(err);
+                        req.flash('Something Went Wrong!');
+                        res.redirect('/landscape');
+                    } else {
+                        res.render('landscape/gardenerDetails', {AID:req.query.AID, areas:result1, gardeners:result2});
+                    }
+                });
+            }
+        });
+    }
+});
+
+router.post('/landscape/gardenerDetails', middlewareObj.isAdmin, function(req,res){
+    const reqBody = new URLSearchParams(req.body).toString();
+    res.redirect('/landscape/gardenerDetails?' + reqBody);
+});
+
 module.exports = router;
