@@ -1,6 +1,7 @@
 <%- include ('../partials/header') %>
 
 <div class="container">
+    <%if(foodOrders.length === 0){%> <h1 class="center">Not Taking New Orders Currently!</h1> <%}%>
     <%if(user && user.UserType === "Admin") {%>
         <p class="center mtp"><a href="/guest/foodOrders/new" class="btn btn-primary" role="button">Start Taking New Orders</a></p>
     <%}%>
