@@ -108,32 +108,14 @@
             <li>
                 <div class="wrapper">
                     <span class="square">
-                      <a class="tenth before after anc" href="/guest/monthlyBookings/room">Monthly Room Bookings</a>
+                      <a class="tenth before after anc" href="/guest/foodOrders">Food Booking</a>
                     </span>
                 </div>	
             </li>
-            <%if(user && user.UserType === "Admin") {%>
-                <li>
-                    <div class="wrapper">
-                        <span class="square">
-                          <a class="tenth before after anc" href="/guest/bookings/room">Room Booking Requests</a>
-                        </span>
-                    </div>	
-                </li>
-            <%}%>
-            <%if(user && user.UserType === "Admin") {%>
-                <li>
-                    <div class="wrapper">
-                        <span class="square">
-                          <a class="tenth before after anc" href="/guest/Expenditures">Old Expenditures</a>
-                        </span>
-                    </div>	
-                </li>
-            <%}%> 
             <li>
                 <div class="wrapper">
                     <span class="square">
-                        <a class="tenth before after anc" href="/guest/leaveRequests/new">Submit Leave Request</a>
+                        <a class="tenth before after anc" href="/guest/Expenditures">Old Expenditures</a>
                     </span>
                 </div>	
             </li>
@@ -144,15 +126,25 @@
                     </span>
                 </div>	
             </li>
+            <%if(user && user.UserType === "Staff"){%>
+                <li>
+                    <div class="wrapper">
+                        <span class="square">
+                            <a class="tenth before after anc" href="/guest/leaveRequests/new">Submit Leave Request</a>
+                        </span>
+                    </div>	
+                </li>
+            <%}%>
         </ul>   
     </div>
     
     <div class="col">
         <ul class="list">
+        <%if(user && user.UserType === "Admin") {%>
             <li>
                 <div class="wrapper">
                     <span class="square">
-                      <a class="tenth before after anc" href="/guest/foodOrders">Food Booking</a>
+                      <a class="tenth before after anc" href="/guest/monthlyBookings/room">Monthly Room Bookings</a>
                     </span>
                 </div>	
             </li>
@@ -163,7 +155,13 @@
                     </span>
                 </div>	
             </li>
-        <%if(user && user.UserType === "Admin") {%>
+            <li>
+                <div class="wrapper">
+                    <span class="square">
+                      <a class="tenth before after anc" href="/guest/bookings/room">Room Booking Requests</a>
+                    </span>
+                </div>	
+            </li>
             <li>
                 <div class="wrapper">
                     <span class="square">
@@ -171,8 +169,6 @@
                     </span>
                 </div>	
             </li>
-        <%}%>
-        <%if(user && user.UserType === "Admin") {%>
             <li>
                 <div class="wrapper">
                     <span class="square">
@@ -180,7 +176,6 @@
                     </span>
                 </div>	
             </li>
-        <%}%>
             <li>
                 <div class="wrapper">
                     <span class="square">
@@ -188,6 +183,7 @@
                     </span>
                 </div>	
             </li>
+        <%}%>
         </ul>
     </div>
 </div>

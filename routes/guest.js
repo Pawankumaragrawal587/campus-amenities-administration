@@ -356,7 +356,7 @@ router.get('/guest/booking/food/:status/:bookingId', middlewareObj.isAdmin, func
 //              Expenditures
 //===================================================
 
-router.get('/guest/expenditures', middlewareObj.isAdmin, function(req,res){
+router.get('/guest/expenditures', middlewareObj.isLoggedIn, function(req,res){
     mysqlConnection.query(mysqlQueriesGuest.selectExpenditure(), function(err,result){
         if(err) {
             console.log(err);
@@ -402,7 +402,7 @@ router.post('/guest/expenditures/new', middlewareObj.isAdmin, function(req,res){
 //              Monthly Bookings
 //===================================================
 
-router.get('/guest/monthlyBookings/room', middlewareObj.isLoggedIn, function(req,res){
+router.get('/guest/monthlyBookings/room', middlewareObj.isAdmin, function(req,res){
     if(!req.query.monthAndYear) {
         res.render('guest/monthlyRoomBooking', {bookings:[], monthAndYear: false});
     } else {
@@ -425,12 +425,12 @@ router.get('/guest/monthlyBookings/room', middlewareObj.isLoggedIn, function(req
     }
 });
 
-router.post('/guest/monthlyBookings/room', middlewareObj.isLoggedIn, function(req,res){
+router.post('/guest/monthlyBookings/room', middlewareObj.isAdmin, function(req,res){
     const reqBody = new URLSearchParams(req.body).toString();
     res.redirect('/guest/monthlyBookings/room?' + reqBody);
 });
 
-router.get('/guest/monthlyBookings/food', middlewareObj.isLoggedIn, function(req,res){
+router.get('/guest/monthlyBookings/food', middlewareObj.isAdmin, function(req,res){
     if(!req.query.monthAndYear) {
         res.render('guest/monthlyFoodBooking', {bookings:[], monthAndYear: false});
     } else {
@@ -453,7 +453,7 @@ router.get('/guest/monthlyBookings/food', middlewareObj.isLoggedIn, function(req
     }
 });
 
-router.post('/guest/monthlyBookings/food', middlewareObj.isLoggedIn, function(req,res){
+router.post('/guest/monthlyBookings/food', middlewareObj.isAdmin, function(req,res){
     const reqBody = new URLSearchParams(req.body).toString();
     res.redirect('/guest/monthlyBookings/food?' + reqBody);
 });
